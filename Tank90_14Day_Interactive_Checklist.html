@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Tank 90 — Dosing Checklist</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600&display=swap');
+
+  :root {
+    --ocean:   #0D3B6E;
+    --ocean-lt:#1a5499;
+    --red:     #C0392B;
+    --red-lt:  #e74c3c;
+    --amber:   #C47800;
+    --green:   #1A7A3A;
+    --teal:    #0E7C7B;
+    --purple:  #6B3FA0;
+    --bg:      #0a0f1a;
+    --bg2:     #111827;
+    --bg3:     #1c2536;
+    --border:  rgba(255,255,255,0.08);
+    --text:    #e8edf5;
+    --muted:   #8899aa;
+    --check-size: 32px;
+    --radius:  14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'DM Mono', monospace;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  .header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,15,26,0.96);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px 12px;
+  }
+  .header-top { display: flex; align-items: center; justify-content: space-between; }
+  .header h1 { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; color: #fff; }
+  .tank-badge {
+    background: var(--teal); color: #fff;
+    font-size: 10px; padding: 3px 10px; border-radius: 20px;
+    font-weight: 500; letter-spacing: 1px;
+  }
+  .header-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .progress-wrap { margin-top: 10px; }
+  .progress-bar { height: 4px; background: var(--bg3); border-radius: 2px; overflow: hidden; }
+  .progress-fill {
+    height: 100%; border-radius: 2px;
+    background: linear-gradient(90deg, var(--teal), var(--green));
+    transition: width 0.4s ease; width: 0%;
+  }
+  .progress-label { font-size: 11px; color: var(--muted); margin-top: 5px; display: flex; justify-content: space-between; }
+
+  .day-nav {
+    display: flex; gap: 6px; overflow-x: auto;
+    padding: 12px 20px 10px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .day-nav::-webkit-scrollbar { display: none; }
+  .day-tab {
+    flex-shrink: 0; padding: 8px 14px; border-radius: 50px;
+    border: 1.5px solid var(--border);
+    background: transparent; color: var(--muted);
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    cursor: pointer; transition: all 0.2s; white-space: nowrap;
+  }
+  .day-tab.active { background: var(--ocean); border-color: var(--ocean-lt); color: #fff; }
+  .day-tab.complete { border-color: var(--green); color: var(--green); }
+  .day-tab.active.complete { background: var(--green); border-color: var(--green); color: #fff; }
+  .day-tab.has-corrections { border-color: var(--red); }
+  .day-tab.active.has-corrections { background: var(--red); border-color: var(--red-lt); }
+  .day-tab.ca-restart { border-color: var(--teal); }
+  .day-tab.active.ca-restart { background: var(--teal); border-color: var(--teal); }
+
+  .day-panels { padding: 0 16px 100px; }
+  .day-panel { display: none; }
+  .day-panel.active { display: block; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+
+  .day-header {
+    padding: 16px 0 12px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .day-title { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; color: #fff; line-height: 1; }
+  .day-date { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .day-ca { font-size: 12px; margin-top: 2px; }
+  .day-ca span { color: var(--teal); }
+
+  .section-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; }
+  .section-header { padding: 12px 16px 10px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); }
+  .section-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .section-title { font-size: 11px; letter-spacing: 1.5px; font-weight: 500; }
+  .section-count { margin-left: auto; font-size: 11px; color: var(--muted); }
+
+  .pump-banner { background: var(--bg3); padding: 12px 16px; display: flex; gap: 20px; flex-wrap: wrap; }
+  .pump-item { display: flex; flex-direction: column; gap: 2px; }
+  .pump-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; }
+  .pump-value { font-size: 14px; font-weight: 500; }
+  .pump-stopped { color: var(--red); }
+  .pump-running { color: var(--green); }
+  .pump-restarting { color: var(--teal); }
+
+  .event-banner {
+    margin-bottom: 12px; padding: 14px 16px; border-radius: var(--radius);
+    border-left: 4px solid; display: flex; align-items: flex-start; gap: 12px;
+  }
+  .event-banner.test { border-color: var(--green); background: rgba(26,122,58,0.12); }
+  .event-banner.ca-restart { border-color: var(--teal); background: rgba(14,124,123,0.12); }
+  .event-banner.icp  { border-color: var(--purple); background: rgba(107,63,160,0.15); }
+  .event-banner.warning { border-color: var(--amber); background: rgba(196,120,0,0.12); }
+  .event-icon { font-size: 22px; flex-shrink: 0; }
+  .event-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+  .event-text  { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  .task-item {
+    display: flex; align-items: center;
+    padding: 14px 16px; border-bottom: 1px solid var(--border);
+    gap: 14px; cursor: pointer; transition: background 0.15s;
+    -webkit-user-select: none; user-select: none;
+  }
+  .task-item:last-child { border-bottom: none; }
+  .task-item:active { background: rgba(255,255,255,0.04); }
+  .task-item.done { opacity: 0.5; }
+  .task-item.done .task-name { text-decoration: line-through; }
+
+  .checkbox {
+    width: var(--check-size); height: var(--check-size);
+    border-radius: 8px; border: 2px solid rgba(255,255,255,0.2);
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .task-item.done .checkbox { background: var(--green); border-color: var(--green); }
+  .checkmark { position: relative; width: 16px; height: 16px; opacity: 0; transition: opacity 0.15s; }
+  .task-item.done .checkmark { opacity: 1; }
+  .checkmark::before { content:''; position:absolute; width:5px; height:2px; background:#fff; border-radius:2px; left:1px; top:9px; transform:rotate(45deg); }
+  .checkmark::after  { content:''; position:absolute; width:10px; height:2px; background:#fff; border-radius:2px; left:4px; top:8px; transform:rotate(-45deg); }
+
+  .task-info { flex: 1; min-width: 0; }
+  .task-name { font-size: 14px; font-weight: 500; }
+  .task-dose { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .task-badge { font-size: 10px; padding: 3px 8px; border-radius: 20px; font-weight: 500; white-space: nowrap; flex-shrink: 0; }
+  .badge-correction { background: rgba(192,57,43,0.2); color: var(--red-lt); }
+  .badge-daily      { background: rgba(14,124,123,0.2); color: #4dcfce; }
+  .badge-new        { background: rgba(107,63,160,0.2); color: #b088f9; }
+
+  .notes-area { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 12px; }
+  .notes-label { padding: 10px 16px 6px; font-size: 10px; letter-spacing: 1.5px; color: var(--muted); border-bottom: 1px solid var(--border); }
+  .notes-input { width: 100%; background: transparent; border: none; outline: none; color: var(--text); font-family: 'DM Mono', monospace; font-size: 13px; padding: 12px 16px; min-height: 70px; resize: none; line-height: 1.6; }
+  .notes-input::placeholder { color: rgba(136,153,170,0.4); }
+
+  .ref-section { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; }
+  .ref-header { padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+  .ref-header-text { font-size: 10px; letter-spacing: 1.5px; color: var(--muted); }
+  .ref-chevron { font-size: 16px; color: var(--muted); transition: transform 0.2s; }
+  .ref-section.open .ref-chevron { transform: rotate(180deg); }
+  .ref-content { display: none; padding: 0 16px 16px; border-top: 1px solid var(--border); }
+  .ref-section.open .ref-content { display: block; }
+  .ref-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.05); gap: 12px; }
+  .ref-row:last-child { border: none; }
+  .ref-elem { font-size: 12px; }
+  .ref-dose { font-size: 12px; color: var(--teal); text-align: right; flex-shrink: 0; }
+
+  .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--green); color: #fff; padding: 12px 24px; border-radius: 50px; font-size: 13px; font-weight: 500; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); z-index: 999; pointer-events: none; white-space: nowrap; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10,15,26,0.97); backdrop-filter: blur(20px); border-top: 1px solid var(--border); display: flex; padding: 10px 20px 20px; gap: 10px; z-index: 100; }
+  .nav-btn { flex: 1; padding: 14px 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 12px; cursor: pointer; transition: all 0.2s; text-align: center; }
+  .nav-btn:active { background: var(--bg2); transform: scale(0.97); }
+  .nav-btn.primary { background: var(--ocean); border-color: var(--ocean-lt); color: #fff; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <h1>🪸 Reef Dosing</h1>
+        <span class="tank-badge">TANK 90</span>
+      </div>
+      <div class="header-sub">3 MAY – 16 MAY 2026 &nbsp;·&nbsp; 90 GAL &nbsp;·&nbsp; LPS</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:22px;font-family:Fraunces,serif;font-weight:600" id="overall-pct">0%</div>
+      <div style="font-size:10px;color:var(--muted)" id="overall-lbl">complete</div>
+    </div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="overall-bar"></div></div>
+    <div class="progress-label">
+      <span id="tasks-done">0 tasks done</span>
+      <span id="tasks-total">0 total</span>
+    </div>
+  </div>
+</div>
+
+<div class="day-nav" id="day-nav"></div>
+<div class="day-panels" id="day-panels"></div>
+<div class="toast" id="toast"></div>
+
+<div class="bottom-nav">
+  <button class="nav-btn" onclick="prevDay()">← Prev</button>
+  <button class="nav-btn primary" onclick="scrollToToday()">Today</button>
+  <button class="nav-btn" onclick="nextDay()">Next →</button>
+</div>
+
+<script>
+const START = new Date(2026, 4, 3); // May 3, 2026
+const KEY   = 'reef_tank90_v1';
+
+const CORRECTIONS = [
+  { name:'Strontium',  dose:'5.36 ml → sump',   days:[1,2,3,4,5,6] },
+  { name:'Barium',     dose:'21.19 ml → sump',  days:[1,2,3,4] },
+  { name:'Fluoride',   dose:'32.18 ml → sump',  days:[1,2,3,4,5,6,7,8,9] },
+  { name:'Nickel (correction)', dose:'1.67 ml → tank', days:[1,2] },
+  { name:'Zinc',       dose:'0.55 ml → sump',   days:[1,2,3] },
+  { name:'Caesium',    dose:'0.61 ml → sump',   days:[1,2] },
+  { name:'Molybdenum', dose:'1.70 ml → sump',   days:[1] },
+  { name:'Magnesium',  dose:'90.04 ml → sump',  days:[1] },
+];
+
+const DAILIES = [
+  { name:'Iron (Classic)',      dose:'2.0 ml/day → tank',       badge:'daily' },
+  { name:'Copper (NANO)',       dose:'6–8 ml/day → tank',       badge:'daily' },
+  { name:'Cobalt (Classic)',    dose:'1.0–1.2 ml/day → tank',   badge:'daily' },
+  { name:'Manganese (Classic)', dose:'2.0 ml/day → tank',       badge:'daily' },
+  { name:'Chromium (Classic)',  dose:'0.4 ml/day → tank ✓',     badge:'daily' },
+  { name:'Selenium (Classic)',  dose:'0.07 ml/day → tank',      badge:'new'   },
+  { name:'Nickel (Classic)',    dose:'1.67 ml days 1–2, then 1.6 ml/day → tank', badge:'daily' },
+  { name:'Vanadium',            dose:'3 drops/day → tank (cobalt dropper)', badge:'daily' },
+  { name:'Iodine',              dose:'6–8 drops/day Seachem Reef Iodide → tank', badge:'daily' },
+];
+
+const WEEKDAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function dateStr(day) {
+  const d = new Date(START); d.setDate(d.getDate() + day - 1);
+  return `${WEEKDAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]} 2026`;
+}
+function shortDate(day) {
+  const d = new Date(START); d.setDate(d.getDate() + day - 1);
+  return `${WEEKDAYS[d.getDay()].slice(0,3)} ${d.getDate()}`;
+}
+
+function caStatus(day) {
+  if (day <= 6) {
+    const ca = Math.round(462 - 4.6 * day);
+    return { pump: 'STOPPED', ca: ca, cls: 'pump-stopped' };
+  }
+  return { pump: '10 ml/day ESV Comp. 2', ca: 435, cls: 'pump-running' };
+}
+
+function events(day) {
+  const evs = [];
+  if (day === 5) evs.push({type:'test', icon:'🧪', title:'5-DAY CHECK — Test Ca + Alk', text:'Expected Ca ~439 mg/L, Alk ~8.0 dKH. Confirm Ca is falling toward 435.'});
+  if (day === 6) evs.push({type:'ca-restart', icon:'⚙️', title:'TEST Ca — PUMP RESTART DECISION', text:'Expected Ca ~434 mg/L. If ≤ 435: restart Ca pump tomorrow at 10 ml/day ESV Component 2.'});
+  if (day === 7) evs.push({type:'ca-restart', icon:'✅', title:'RESTART Ca PUMP', text:'Set ESV Component 2 to 10 ml/day (equal to Alk pump at 10 ml/day). This is the correct ESV equal-volume maintenance.'});
+  if (day === 14) evs.push({type:'icp', icon:'📬', title:'SEND ICP SAMPLE TODAY', text:'Take sample BEFORE daily dosing. This is the first calibration ICP for Tank 90 — key for calibrating Iron, Copper and Cobalt doses.'});
+  return evs;
+}
+
+// ─── State ─────────────────────────────────────────────────────────────────
+let state = {};
+function load() { try { state = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(e) { state = {}; } }
+function save() { localStorage.setItem(KEY, JSON.stringify(state)); }
+function isChecked(day, cat, idx) { return !!state[`d${day}_${cat}_${idx}`]; }
+function setChecked(day, cat, idx, val) { state[`d${day}_${cat}_${idx}`] = val; save(); }
+function getNote(day) { return state[`note_d${day}`] || ''; }
+function setNote(day, val) { state[`note_d${day}`] = val; save(); }
+
+// ─── Build ─────────────────────────────────────────────────────────────────
+let currentDay = 1;
+
+function buildAll() {
+  const nav    = document.getElementById('day-nav');
+  const panels = document.getElementById('day-panels');
+
+  for (let day = 1; day <= 14; day++) {
+    const corrs   = CORRECTIONS.filter(c => c.days.includes(day));
+    const hasCorr = corrs.length > 0;
+    const evs     = events(day);
+    const cs      = caStatus(day);
+
+    // Tab
+    const tab = document.createElement('button');
+    tab.className = 'day-tab' + (hasCorr ? ' has-corrections' : '') + (day === 7 ? ' ca-restart' : '');
+    tab.id = `tab-${day}`;
+    tab.textContent = shortDate(day);
+    tab.onclick = () => goToDay(day);
+    nav.appendChild(tab);
+
+    // Panel
+    const panel = document.createElement('div');
+    panel.className = 'day-panel';
+    panel.id = `panel-${day}`;
+
+    // Dailies for this day (Nickel special)
+    const localDailies = day <= 2
+      ? DAILIES.filter(d => d.name !== 'Nickel (Classic)')
+      : DAILIES;
+
+    let html = `
+      <div class="day-header">
+        <div>
+          <div class="day-title">Day ${day}</div>
+          <div class="day-date">${dateStr(day)}</div>
+        </div>
+        <div style="text-align:right">
+          <div id="day-pct-${day}" style="font-size:20px;font-family:Fraunces,serif;font-weight:600"></div>
+          <div class="day-ca">Ca <span>~${cs.ca}</span> mg/L</div>
+        </div>
+      </div>`;
+
+    // Events
+    evs.forEach(ev => {
+      html += `<div class="event-banner ${ev.type}">
+        <div class="event-icon">${ev.icon}</div>
+        <div><div class="event-title">${ev.title}</div><div class="event-text">${ev.text}</div></div>
+      </div>`;
+    });
+
+    // Pumps
+    html += `<div class="section-card">
+      <div class="section-header">
+        <div class="section-dot" style="background:var(--amber)"></div>
+        <div class="section-title" style="color:var(--amber)">ESV B-IONIC PUMP SETTINGS</div>
+      </div>
+      <div class="pump-banner">
+        <div class="pump-item">
+          <div class="pump-label">ALK — Component 1</div>
+          <div class="pump-value pump-running">10 ml/day ✓</div>
+        </div>
+        <div class="pump-item">
+          <div class="pump-label">Ca — Component 2</div>
+          <div class="pump-value ${cs.cls}">${cs.pump}</div>
+        </div>
+      </div>
+    </div>`;
+
+    // Corrections
+    if (hasCorr) {
+      html += `<div class="section-card">
+        <div class="section-header">
+          <div class="section-dot" style="background:var(--red)"></div>
+          <div class="section-title" style="color:var(--red-lt)">CORRECTIONS — INTO SUMP</div>
+          <div class="section-count" id="corr-count-${day}"></div>
+        </div>`;
+      corrs.forEach((c, i) => {
+        const done = isChecked(day, 'corr', i);
+        html += taskHTML(day, 'corr', i, c.name, c.dose, 'badge-correction', done);
+      });
+      html += `</div>`;
+    }
+
+    // Dailies
+    html += `<div class="section-card">
+      <div class="section-header">
+        <div class="section-dot" style="background:var(--teal)"></div>
+        <div class="section-title" style="color:#4dcfce">DAILY ELEMENTS — INTO DISPLAY TANK</div>
+        <div class="section-count" id="daily-count-${day}"></div>
+      </div>`;
+
+    // Nickel: correction for days 1-2, maintenance from day 3
+    if (day <= 2) {
+      const done = isChecked(day, 'daily_ni_corr', 0);
+      html += taskHTML(day, 'daily_ni_corr', 0, 'Nickel (correction)', '1.67 ml → tank', 'badge-correction', done);
+    }
+    localDailies.forEach((d, i) => {
+      const done = isChecked(day, 'daily', i);
+      html += taskHTML(day, 'daily', i, d.name, d.dose, d.badge === 'new' ? 'badge-new' : 'badge-daily', done);
+    });
+    html += `</div>`;
+
+    // Notes
+    html += `<div class="notes-area">
+      <div class="notes-label">NOTES</div>
+      <textarea class="notes-input" id="note-${day}" placeholder="Add notes for today..."
+        oninput="onNote(${day},this.value)">${getNote(day)}</textarea>
+    </div>`;
+
+    // Reference
+    html += `<div class="ref-section" id="ref-${day}">
+      <div class="ref-header" onclick="toggleRef(${day})">
+        <div class="ref-header-text">QUICK REFERENCE — ALL DOSES</div>
+        <div class="ref-chevron">▼</div>
+      </div>
+      <div class="ref-content">${buildRef(day)}</div>
+    </div>`;
+
+    panel.innerHTML = html;
+    panels.appendChild(panel);
+  }
+}
+
+function taskHTML(day, cat, idx, name, dose, badgeCls, done) {
+  return `<div class="task-item ${done?'done':''}" id="task-${day}-${cat}-${idx}"
+    onclick="toggleTask(${day},'${cat}',${idx})">
+    <div class="checkbox"><div class="checkmark"></div></div>
+    <div class="task-info">
+      <div class="task-name">${name}</div>
+      <div class="task-dose">${dose}</div>
+    </div>
+    <div class="task-badge ${badgeCls}">${badgeCls === 'badge-correction' ? 'SUMP' : badgeCls === 'badge-new' ? 'NEW' : 'TANK'}</div>
+  </div>`;
+}
+
+function buildRef(day) {
+  const corrs = CORRECTIONS.filter(c => c.days.includes(day));
+  const cs = caStatus(day);
+  let h = '';
+  h += `<div style="font-size:10px;color:var(--amber);letter-spacing:1px;padding:10px 0 4px">PUMPS</div>`;
+  h += `<div class="ref-row"><div class="ref-elem">Alk (ESV Comp. 1)</div><div class="ref-dose">10 ml/day ✓</div></div>`;
+  h += `<div class="ref-row"><div class="ref-elem">Ca (ESV Comp. 2)</div><div class="ref-dose">${cs.pump}</div></div>`;
+  if (corrs.length) {
+    h += `<div style="font-size:10px;color:var(--red-lt);letter-spacing:1px;padding:10px 0 4px">CORRECTIONS</div>`;
+    corrs.forEach(c => { h += `<div class="ref-row"><div class="ref-elem">${c.name}</div><div class="ref-dose">${c.dose}</div></div>`; });
+  }
+  h += `<div style="font-size:10px;color:#4dcfce;letter-spacing:1px;padding:10px 0 4px">DAILIES</div>`;
+  if (day <= 2) h += `<div class="ref-row"><div class="ref-elem">Nickel (correction)</div><div class="ref-dose">1.67 ml → tank</div></div>`;
+  const localDailies = day <= 2 ? DAILIES.filter(d => d.name !== 'Nickel (Classic)') : DAILIES;
+  localDailies.forEach(d => { h += `<div class="ref-row"><div class="ref-elem">${d.name}</div><div class="ref-dose">${d.dose.split('→')[0].trim()}</div></div>`; });
+  return h;
+}
+
+// ─── Interactions ──────────────────────────────────────────────────────────
+function toggleTask(day, cat, idx) {
+  const was = isChecked(day, cat, idx);
+  setChecked(day, cat, idx, !was);
+  const el = document.getElementById(`task-${day}-${cat}-${idx}`);
+  if (el) el.classList.toggle('done', !was);
+  updateCounts(day);
+  updateOverall();
+  if (!was) showToast('✓ Done');
+}
+function onNote(day, val) { setNote(day, val); }
+function toggleRef(day) { document.getElementById(`ref-${day}`).classList.toggle('open'); }
+
+function goToDay(day) {
+  currentDay = day;
+  document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(`panel-${day}`)?.classList.add('active');
+  const tab = document.getElementById(`tab-${day}`);
+  tab?.classList.add('active');
+  tab?.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateCounts(day);
+}
+function prevDay() { if (currentDay > 1)  goToDay(currentDay - 1); }
+function nextDay() { if (currentDay < 14) goToDay(currentDay + 1); }
+function scrollToToday() {
+  const today = new Date();
+  const diff  = Math.floor((today - START) / 86400000) + 1;
+  goToDay(Math.max(1, Math.min(14, diff)));
+}
+
+function countTasks(day) {
+  const corrs = CORRECTIONS.filter(c => c.days.includes(day));
+  const localDailies = day <= 2 ? DAILIES.filter(d => d.name !== 'Nickel (Classic)') : DAILIES;
+  const hasNiCorr = day <= 2;
+  let total = corrs.length + localDailies.length + (hasNiCorr ? 1 : 0);
+  let done  = 0;
+  corrs.forEach((c,i)        => { if (isChecked(day,'corr',i)) done++; });
+  localDailies.forEach((d,i) => { if (isChecked(day,'daily',i)) done++; });
+  if (hasNiCorr && isChecked(day,'daily_ni_corr',0)) done++;
+  return { total, done };
+}
+
+function updateCounts(day) {
+  const { total, done } = countTasks(day);
+  const pct = total ? Math.round(done/total*100) : 0;
+  const el = document.getElementById(`day-pct-${day}`);
+  if (el) el.textContent = `${pct}%`;
+
+  const corrs = CORRECTIONS.filter(c => c.days.includes(day));
+  const corrDone = corrs.filter((c,i) => isChecked(day,'corr',i)).length;
+  const cc = document.getElementById(`corr-count-${day}`);
+  if (cc) cc.textContent = `${corrDone}/${corrs.length}`;
+
+  const localDailies = day <= 2 ? DAILIES.filter(d => d.name !== 'Nickel (Classic)') : DAILIES;
+  const hasNiCorr = day <= 2;
+  const dailyTotal = localDailies.length + (hasNiCorr ? 1 : 0);
+  const dailyDone  = localDailies.filter((d,i) => isChecked(day,'daily',i)).length
+                   + (hasNiCorr && isChecked(day,'daily_ni_corr',0) ? 1 : 0);
+  const dc = document.getElementById(`daily-count-${day}`);
+  if (dc) dc.textContent = `${dailyDone}/${dailyTotal}`;
+
+  const tab = document.getElementById(`tab-${day}`);
+  if (tab) tab.classList.toggle('complete', done === total && total > 0);
+}
+
+function updateOverall() {
+  let totalAll = 0, doneAll = 0;
+  for (let d = 1; d <= 14; d++) {
+    const { total, done } = countTasks(d);
+    totalAll += total; doneAll += done;
+  }
+  const pct = totalAll ? Math.round(doneAll/totalAll*100) : 0;
+  document.getElementById('overall-bar').style.width = pct + '%';
+  document.getElementById('overall-pct').textContent = pct + '%';
+  document.getElementById('tasks-done').textContent = `${doneAll} tasks done`;
+  document.getElementById('tasks-total').textContent = `${totalAll} total`;
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1500);
+}
+
+// ─── Init ──────────────────────────────────────────────────────────────────
+load();
+buildAll();
+const today = new Date();
+const diffDays = Math.floor((today - START) / 86400000) + 1;
+goToDay(Math.max(1, Math.min(14, diffDays)));
+for (let d = 1; d <= 14; d++) updateCounts(d);
+updateOverall();
+</script>
+</body>
+</html>
