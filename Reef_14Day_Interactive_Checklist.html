@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Reef Dosing Checklist — 14 Days</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&display=swap');
+
+  :root {
+    --ocean:   #0D3B6E;
+    --ocean-lt:#1a5499;
+    --red:     #C0392B;
+    --red-lt:  #e74c3c;
+    --amber:   #C47800;
+    --green:   #1A7A3A;
+    --teal:    #0E7C7B;
+    --purple:  #6B3FA0;
+    --bg:      #0a0f1a;
+    --bg2:     #111827;
+    --bg3:     #1c2536;
+    --border:  rgba(255,255,255,0.08);
+    --text:    #e8edf5;
+    --muted:   #8899aa;
+    --check-size: 32px;
+    --radius:  14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'DM Mono', monospace;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Header ── */
+  .header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,15,26,0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px 12px;
+  }
+  .header-top { display: flex; align-items: center; justify-content: space-between; }
+  .header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 22px; font-weight: 600;
+    color: #fff; letter-spacing: -0.5px;
+  }
+  .header-sub { font-size: 11px; color: var(--muted); margin-top: 2px; letter-spacing: 0.5px; }
+  .progress-wrap { margin-top: 10px; }
+  .progress-bar {
+    height: 4px; background: var(--bg3); border-radius: 2px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 2px;
+    background: linear-gradient(90deg, var(--teal), var(--green));
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+  .progress-label { font-size: 11px; color: var(--muted); margin-top: 5px; display: flex; justify-content: space-between; }
+
+  /* ── Day nav tabs ── */
+  .day-nav {
+    display: flex; gap: 6px; overflow-x: auto;
+    padding: 12px 20px 10px; scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .day-nav::-webkit-scrollbar { display: none; }
+  .day-tab {
+    flex-shrink: 0; scroll-snap-align: start;
+    padding: 8px 14px; border-radius: 50px;
+    border: 1.5px solid var(--border);
+    background: transparent; color: var(--muted);
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    cursor: pointer; transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .day-tab.active {
+    background: var(--ocean); border-color: var(--ocean-lt);
+    color: #fff;
+  }
+  .day-tab.complete {
+    border-color: var(--green); color: var(--green);
+  }
+  .day-tab.active.complete {
+    background: var(--green); border-color: var(--green); color: #fff;
+  }
+  .day-tab.has-corrections { border-color: var(--red); }
+  .day-tab.active.has-corrections { background: var(--red); border-color: var(--red-lt); }
+
+  /* ── Day panel ── */
+  .day-panels { padding: 0 16px 100px; }
+  .day-panel { display: none; }
+  .day-panel.active { display: block; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: none; } }
+
+  .day-header {
+    padding: 16px 0 12px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .day-title {
+    font-family: 'Fraunces', serif;
+    font-size: 28px; font-weight: 600; line-height: 1;
+    color: #fff;
+  }
+  .day-date { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .day-stats {
+    text-align: right;
+    font-size: 11px; color: var(--muted);
+  }
+  .day-ca-alk {
+    font-size: 12px; margin-top: 2px;
+  }
+  .day-ca-alk span { color: var(--teal); }
+
+  /* ── Section card ── */
+  .section-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 12px 16px 10px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .section-title { font-size: 11px; letter-spacing: 1.5px; font-weight: 500; }
+  .section-count { margin-left: auto; font-size: 11px; color: var(--muted); }
+
+  /* ── Pump banner ── */
+  .pump-banner {
+    background: var(--bg3); padding: 12px 16px;
+    display: flex; gap: 16px; flex-wrap: wrap;
+  }
+  .pump-item { display: flex; flex-direction: column; gap: 2px; }
+  .pump-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; }
+  .pump-value { font-size: 15px; font-weight: 500; }
+  .pump-value.correction { color: var(--amber); }
+  .pump-value.maintenance { color: var(--green); }
+
+  /* ── Task item ── */
+  .task-item {
+    display: flex; align-items: center;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    gap: 14px; cursor: pointer;
+    transition: background 0.15s;
+    -webkit-user-select: none; user-select: none;
+  }
+  .task-item:last-child { border-bottom: none; }
+  .task-item:active { background: rgba(255,255,255,0.04); }
+  .task-item.done { opacity: 0.5; }
+  .task-item.done .task-name { text-decoration: line-through; }
+
+  .checkbox {
+    width: var(--check-size); height: var(--check-size);
+    border-radius: 8px; border: 2px solid rgba(255,255,255,0.2);
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    background: transparent;
+  }
+  .task-item.done .checkbox {
+    background: var(--green); border-color: var(--green);
+  }
+  .checkmark {
+    width: 16px; height: 16px; opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .task-item.done .checkmark { opacity: 1; }
+  .checkmark::before, .checkmark::after {
+    content: ''; position: absolute;
+    background: #fff; border-radius: 2px;
+  }
+  .checkmark { position: relative; }
+  .checkmark::before { width: 5px; height: 2px; left: 1px; top: 9px; transform: rotate(45deg); }
+  .checkmark::after  { width: 10px; height: 2px; left: 4px; top: 8px; transform: rotate(-45deg); }
+
+  .task-info { flex: 1; min-width: 0; }
+  .task-name { font-size: 14px; font-weight: 500; }
+  .task-dose {
+    font-size: 12px; color: var(--muted); margin-top: 2px;
+  }
+  .task-badge {
+    font-size: 10px; padding: 3px 8px; border-radius: 20px;
+    font-weight: 500; white-space: nowrap; flex-shrink: 0;
+  }
+  .badge-correction { background: rgba(192,57,43,0.2); color: var(--red-lt); }
+  .badge-daily      { background: rgba(14,124,123,0.2); color: #4dcfce; }
+  .badge-pump       { background: rgba(196,120,0,0.2);  color: #f0a500; }
+
+  /* ── Special event banner ── */
+  .event-banner {
+    margin-bottom: 12px;
+    padding: 14px 16px;
+    border-radius: var(--radius);
+    border-left: 4px solid;
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .event-banner.test { border-color: var(--green); background: rgba(26,122,58,0.12); }
+  .event-banner.pump-change { border-color: var(--amber); background: rgba(196,120,0,0.12); }
+  .event-banner.icp  { border-color: var(--purple); background: rgba(107,63,160,0.15); }
+  .event-icon { font-size: 22px; flex-shrink: 0; }
+  .event-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+  .event-text  { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* ── Notes field ── */
+  .notes-area {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden; margin-bottom: 12px;
+  }
+  .notes-label {
+    padding: 10px 16px 6px;
+    font-size: 10px; letter-spacing: 1.5px; color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .notes-input {
+    width: 100%; background: transparent; border: none; outline: none;
+    color: var(--text); font-family: 'DM Mono', monospace; font-size: 13px;
+    padding: 12px 16px; min-height: 70px; resize: none;
+    line-height: 1.6;
+  }
+  .notes-input::placeholder { color: rgba(136,153,170,0.4); }
+
+  /* ── Complete day button ── */
+  .complete-btn {
+    width: 100%; padding: 18px;
+    background: var(--ocean); border: none; border-radius: var(--radius);
+    color: #fff; font-family: 'DM Mono', monospace; font-size: 14px;
+    font-weight: 500; letter-spacing: 0.5px; cursor: pointer;
+    transition: all 0.2s; margin-bottom: 12px;
+  }
+  .complete-btn:active { transform: scale(0.98); background: var(--ocean-lt); }
+  .complete-btn.all-done { background: var(--green); }
+
+  /* ── Reference panel ── */
+  .ref-section {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); margin-bottom: 12px; overflow: hidden;
+  }
+  .ref-header {
+    padding: 12px 16px; display: flex; align-items: center;
+    justify-content: space-between; cursor: pointer;
+    border-bottom: 1px solid var(--border);
+  }
+  .ref-header-text { font-size: 11px; letter-spacing: 1.5px; color: var(--muted); }
+  .ref-chevron { font-size: 16px; color: var(--muted); transition: transform 0.2s; }
+  .ref-section.open .ref-chevron { transform: rotate(180deg); }
+  .ref-content { display: none; padding: 0 16px 16px; }
+  .ref-section.open .ref-content { display: block; }
+  .ref-row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding: 8px 0; border-bottom: 1px solid var(--border); gap: 12px;
+  }
+  .ref-row:last-child { border: none; padding-bottom: 0; }
+  .ref-elem { font-size: 13px; }
+  .ref-dose { font-size: 12px; color: var(--teal); text-align: right; flex-shrink: 0; }
+
+  /* ── Toast notification ── */
+  .toast {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+    background: var(--green); color: #fff;
+    padding: 12px 24px; border-radius: 50px;
+    font-size: 13px; font-weight: 500;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    z-index: 999; pointer-events: none; white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── Bottom nav ── */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(10,15,26,0.97);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    display: flex; padding: 10px 20px 20px; gap: 10px;
+    z-index: 100;
+  }
+  .nav-btn {
+    flex: 1; padding: 14px 10px;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 10px; color: var(--muted);
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    cursor: pointer; transition: all 0.2s; text-align: center;
+  }
+  .nav-btn:active { background: var(--bg2); transform: scale(0.97); }
+  .nav-btn.primary {
+    background: var(--ocean); border-color: var(--ocean-lt); color: #fff;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>🪸 Reef Dosing</h1>
+      <div class="header-sub">2 MAY – 15 MAY 2026 &nbsp;·&nbsp; 150 GAL</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:22px;font-family:Fraunces,serif;font-weight:600" id="overall-pct">0%</div>
+      <div style="font-size:10px;color:var(--muted)" id="overall-lbl">complete</div>
+    </div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="overall-bar"></div></div>
+    <div class="progress-label">
+      <span id="tasks-done">0 tasks done</span>
+      <span id="tasks-total">0 total</span>
+    </div>
+  </div>
+</div>
+
+<div class="day-nav" id="day-nav"></div>
+<div class="day-panels" id="day-panels"></div>
+
+<div class="toast" id="toast"></div>
+
+<div class="bottom-nav">
+  <button class="nav-btn" onclick="prevDay()">← Prev</button>
+  <button class="nav-btn primary" onclick="scrollToToday()">Today</button>
+  <button class="nav-btn" onclick="nextDay()">Next →</button>
+</div>
+
+<script>
+// ─── Data ────────────────────────────────────────────────────────────────────
+const START = new Date(2026, 4, 2); // May 2, 2026
+
+const CORRECTIONS = [
+  { name:'Barium',     dose:'34.52 ml → sump',  days:[1,2,3,4] },
+  { name:'Strontium',  dose:'9.88 ml → sump',   days:[1,2,3,4,5] },
+  { name:'Fluoride',   dose:'53.00 ml → sump',  days:[1,2,3,4,5,6,7,8,9] },
+  { name:'Potassium',  dose:'139.06 ml → sump', days:[1] },
+  { name:'Magnesium',  dose:'381.98 ml → sump', days:[1] },
+  { name:'Nickel (correction)', dose:'2.67 ml → tank', days:[1,2] },
+  { name:'Caesium',    dose:'1.04 ml → sump',   days:[1,2] },
+  { name:'Zinc',       dose:'0.91 ml → sump',   days:[1,2,3] },
+  { name:'Molybdenum', dose:'6.81 ml → sump',   days:[1] },
+];
+
+const DAILIES = [
+  { name:'Iron',       dose:'17–18 ml/day Classic  or  1.7 ml/day Iron-X' },
+  { name:'Copper',     dose:'24 ml/day NANO → tank' },
+  { name:'Cobalt',     dose:'10 ml/day NANO → tank' },
+  { name:'Manganese',  dose:'40 ml/day NANO → tank' },
+  { name:'Chromium',   dose:'1.7 ml/day Classic → tank' },
+  { name:'Selenium',   dose:'0.6 ml/day Classic → tank' },
+  { name:'Nickel',     dose:'5.5 ml/day Classic → tank (days 3–14)' },
+  { name:'Vanadium',   dose:'9–10 drops → tank (cobalt dropper bottle)' },
+  { name:'Iodine',     dose:'3–5 drops Seachem Reef Iodide → tank' },
+];
+
+const WEEKDAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function dateStr(day) {
+  const d = new Date(START); d.setDate(d.getDate() + day - 1);
+  return `${WEEKDAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]} 2026`;
+}
+function shortDate(day) {
+  const d = new Date(START); d.setDate(d.getDate() + day - 1);
+  return `${WEEKDAYS[d.getDay()].slice(0,3)} ${d.getDate()}`;
+}
+
+function alkPump(day)  { return day <= 3 ? {val:'160 ml/day', cls:'correction'} : {val:'139 ml/day', cls:'maintenance'}; }
+function caPump(day)   { return day <= 11? {val:'185 ml/day', cls:'correction'} : {val:'126 ml/day', cls:'maintenance'}; }
+function caExp(day)    { return Math.round(408 + 1.967*day); }
+function alkExp(day)   { return Math.min(7.5 + 0.119*day, 8.5).toFixed(1); }
+
+function events(day) {
+  const evs = [];
+  if (day === 3)  evs.push({type:'pump-change', icon:'⚙️', title:'ALK PUMP CHANGE', text:`Expected Alk ~${alkExp(day)} dKH. If ≥ 7.8 → reduce Alk pump to 139 ml/day.`});
+  if (day === 5)  evs.push({type:'test', icon:'🧪', title:'5-DAY CHECK — Test Ca + Alk', text:`Expected: Ca ~${caExp(day)} mg/L, Alk ~${alkExp(day)} dKH. Confirm both trending toward targets.`});
+  if (day === 11) evs.push({type:'pump-change', icon:'⚙️', title:'Ca PUMP CHANGE', text:`Expected Ca ~${caExp(day)} mg/L. If ≥ 425 → reduce Ca pump to 126 ml/day.`});
+  if (day === 14) evs.push({type:'icp', icon:'📬', title:'SEND ICP SAMPLE TODAY', text:'Take sample BEFORE daily dosing. Expected Ca ~436 mg/L, Alk ~8.5 dKH.'});
+  return evs;
+}
+
+// ─── State ────────────────────────────────────────────────────────────────────
+let state = {};
+const KEY = 'reef_checklist_v3';
+
+function load() {
+  try { state = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(e) { state = {}; }
+}
+function save() {
+  localStorage.setItem(KEY, JSON.stringify(state));
+}
+function taskKey(day, cat, idx) { return `d${day}_${cat}_${idx}`; }
+function noteKey(day) { return `note_d${day}`; }
+function isChecked(day, cat, idx) { return !!state[taskKey(day, cat, idx)]; }
+function setChecked(day, cat, idx, val) {
+  state[taskKey(day, cat, idx)] = val;
+  save();
+}
+function getNote(day) { return state[noteKey(day)] || ''; }
+function setNote(day, val) { state[noteKey(day)] = val; save(); }
+
+// ─── Build UI ─────────────────────────────────────────────────────────────────
+let currentDay = 1;
+
+function buildAll() {
+  const nav = document.getElementById('day-nav');
+  const panels = document.getElementById('day-panels');
+
+  for (let day = 1; day <= 14; day++) {
+    const corrs = CORRECTIONS.filter(c => c.days.includes(day));
+    const hasCorr = corrs.length > 0;
+    const evs = events(day);
+
+    // Nav tab
+    const tab = document.createElement('button');
+    tab.className = 'day-tab' + (hasCorr ? ' has-corrections' : '');
+    tab.id = `tab-${day}`;
+    tab.textContent = shortDate(day);
+    tab.onclick = () => goToDay(day);
+    nav.appendChild(tab);
+
+    // Panel
+    const panel = document.createElement('div');
+    panel.className = 'day-panel';
+    panel.id = `panel-${day}`;
+
+    // Determine daily list (nickel special)
+    const dailyList = DAILIES.map((d,i) => {
+      if (d.name === 'Nickel') {
+        if (day <= 2) return null; // correction days handled separately
+        return d;
+      }
+      return d;
+    }).filter(Boolean);
+
+    // Build nickel task for days 1-2 (correction, not daily)
+    const nickCorrDay = day <= 2;
+
+    let html = `
+      <div class="day-header">
+        <div>
+          <div class="day-title">Day ${day}</div>
+          <div class="day-date">${dateStr(day)}</div>
+        </div>
+        <div class="day-stats">
+          <div id="day-pct-${day}" style="font-size:20px;font-family:Fraunces,serif;font-weight:600"></div>
+          <div class="day-ca-alk">Ca <span>~${caExp(day)}</span> · Alk <span>${alkExp(day)}</span></div>
+        </div>
+      </div>
+    `;
+
+    // Events
+    evs.forEach(ev => {
+      html += `<div class="event-banner ${ev.type}">
+        <div class="event-icon">${ev.icon}</div>
+        <div><div class="event-title">${ev.title}</div><div class="event-text">${ev.text}</div></div>
+      </div>`;
+    });
+
+    // Pump settings
+    const alk = alkPump(day), ca = caPump(day);
+    html += `<div class="section-card">
+      <div class="section-header">
+        <div class="section-dot" style="background:var(--amber)"></div>
+        <div class="section-title" style="color:var(--amber)">PUMP SETTINGS</div>
+      </div>
+      <div class="pump-banner">
+        <div class="pump-item">
+          <div class="pump-label">ALK (NaHCO3)</div>
+          <div class="pump-value ${alk.cls}">${alk.val}</div>
+        </div>
+        <div class="pump-item">
+          <div class="pump-label">Ca (CaCl2)</div>
+          <div class="pump-value ${ca.cls}">${ca.val}</div>
+        </div>
+      </div>
+    </div>`;
+
+    // Corrections
+    if (hasCorr) {
+      html += `<div class="section-card">
+        <div class="section-header">
+          <div class="section-dot" style="background:var(--red)"></div>
+          <div class="section-title" style="color:var(--red-lt)">CORRECTIONS — DOSE INTO SUMP</div>
+          <div class="section-count" id="corr-count-${day}"></div>
+        </div>`;
+      corrs.forEach((c, i) => {
+        const key = `corr_${i}`;
+        const done = isChecked(day, 'corr', i);
+        html += taskHTML(day, 'corr', i, c.name, c.dose, 'badge-correction', 'SUMP');
+      });
+      html += `</div>`;
+    }
+
+    // Daily elements
+    const localDailies = day <= 2
+      ? DAILIES.filter(d => d.name !== 'Nickel')
+      : DAILIES;
+
+    html += `<div class="section-card">
+      <div class="section-header">
+        <div class="section-dot" style="background:var(--teal)"></div>
+        <div class="section-title" style="color:#4dcfce">DAILY ELEMENTS — INTO DISPLAY TANK</div>
+        <div class="section-count" id="daily-count-${day}"></div>
+      </div>`;
+    localDailies.forEach((d, i) => {
+      html += taskHTML(day, 'daily', i, d.name, d.dose, 'badge-daily', 'TANK');
+    });
+    html += `</div>`;
+
+    // Notes
+    html += `<div class="notes-area">
+      <div class="notes-label">NOTES</div>
+      <textarea class="notes-input" id="note-${day}" placeholder="Add notes for today..."
+        oninput="onNote(${day}, this.value)">${getNote(day)}</textarea>
+    </div>`;
+
+    // Reference (collapsible)
+    html += `<div class="ref-section" id="ref-${day}">
+      <div class="ref-header" onclick="toggleRef(${day})">
+        <div class="ref-header-text">QUICK REFERENCE — ALL DOSES</div>
+        <div class="ref-chevron">▼</div>
+      </div>
+      <div class="ref-content">
+        ${buildRefHTML(day)}
+      </div>
+    </div>`;
+
+    panel.innerHTML = html;
+    panels.appendChild(panel);
+  }
+}
+
+function taskHTML(day, cat, idx, name, dose, badgeCls, badgeLabel) {
+  const done = isChecked(day, cat, idx);
+  return `<div class="task-item ${done?'done':''}" id="task-${day}-${cat}-${idx}"
+    onclick="toggleTask(${day},'${cat}',${idx})">
+    <div class="checkbox">
+      <div class="checkmark"></div>
+    </div>
+    <div class="task-info">
+      <div class="task-name">${name}</div>
+      <div class="task-dose">${dose}</div>
+    </div>
+    <div class="task-badge ${badgeCls}">${badgeLabel}</div>
+  </div>`;
+}
+
+function buildRefHTML(day) {
+  const corrs = CORRECTIONS.filter(c => c.days.includes(day));
+  let h = '';
+  if (corrs.length) {
+    h += `<div style="font-size:10px;color:var(--red-lt);letter-spacing:1px;padding:10px 0 4px">CORRECTIONS</div>`;
+    corrs.forEach(c => {
+      h += `<div class="ref-row"><div class="ref-elem">${c.name}</div><div class="ref-dose">${c.dose}</div></div>`;
+    });
+  }
+  h += `<div style="font-size:10px;color:#4dcfce;letter-spacing:1px;padding:10px 0 4px">DAILIES</div>`;
+  const localDailies = day <= 2 ? DAILIES.filter(d => d.name !== 'Nickel') : DAILIES;
+  localDailies.forEach(d => {
+    h += `<div class="ref-row"><div class="ref-elem">${d.name}</div><div class="ref-dose">${d.dose.split('→')[0].trim()}</div></div>`;
+  });
+  const alk = alkPump(day), ca = caPump(day);
+  h += `<div style="font-size:10px;color:var(--amber);letter-spacing:1px;padding:10px 0 4px">PUMPS</div>`;
+  h += `<div class="ref-row"><div class="ref-elem">Alk (NaHCO3)</div><div class="ref-dose">${alk.val}</div></div>`;
+  h += `<div class="ref-row"><div class="ref-elem">Ca (CaCl2)</div><div class="ref-dose">${ca.val}</div></div>`;
+  return h;
+}
+
+// ─── Interactions ──────────────────────────────────────────────────────────
+function toggleTask(day, cat, idx) {
+  const was = isChecked(day, cat, idx);
+  setChecked(day, cat, idx, !was);
+  const el = document.getElementById(`task-${day}-${cat}-${idx}`);
+  if (el) el.classList.toggle('done', !was);
+  updateCounts(day);
+  updateOverall();
+  if (!was) showToast('✓ Done');
+}
+
+function onNote(day, val) { setNote(day, val); }
+
+function toggleRef(day) {
+  const el = document.getElementById(`ref-${day}`);
+  el.classList.toggle('open');
+}
+
+function goToDay(day) {
+  currentDay = day;
+  document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+  const panel = document.getElementById(`panel-${day}`);
+  const tab   = document.getElementById(`tab-${day}`);
+  if (panel) panel.classList.add('active');
+  if (tab)   tab.classList.add('active');
+  tab?.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateCounts(day);
+}
+
+function prevDay() { if (currentDay > 1)  goToDay(currentDay - 1); }
+function nextDay() { if (currentDay < 14) goToDay(currentDay + 1); }
+
+function scrollToToday() {
+  const today = new Date();
+  const diff  = Math.floor((today - START) / 86400000) + 1;
+  const day   = Math.max(1, Math.min(14, diff));
+  goToDay(day);
+}
+
+function countTasks(day) {
+  const corrs = CORRECTIONS.filter(c => c.days.includes(day));
+  const localDailies = day <= 2 ? DAILIES.filter(d => d.name !== 'Nickel') : DAILIES;
+  let total = corrs.length + localDailies.length;
+  let done  = 0;
+  corrs.forEach((c,i) => { if (isChecked(day,'corr',i)) done++; });
+  localDailies.forEach((d,i) => { if (isChecked(day,'daily',i)) done++; });
+  return { total, done };
+}
+
+function updateCounts(day) {
+  const { total, done } = countTasks(day);
+  const pct = total ? Math.round(done/total*100) : 0;
+  const el = document.getElementById(`day-pct-${day}`);
+  if (el) el.textContent = `${pct}%`;
+
+  const corrCount = document.getElementById(`corr-count-${day}`);
+  if (corrCount) {
+    const corrs = CORRECTIONS.filter(c => c.days.includes(day));
+    const corrDone = corrs.filter((c,i) => isChecked(day,'corr',i)).length;
+    corrCount.textContent = `${corrDone}/${corrs.length}`;
+  }
+  const dailyCount = document.getElementById(`daily-count-${day}`);
+  if (dailyCount) {
+    const localDailies = day <= 2 ? DAILIES.filter(d => d.name !== 'Nickel') : DAILIES;
+    const dailyDone = localDailies.filter((d,i) => isChecked(day,'daily',i)).length;
+    dailyCount.textContent = `${dailyDone}/${localDailies.length}`;
+  }
+
+  // Update tab
+  const tab = document.getElementById(`tab-${day}`);
+  if (tab) {
+    tab.classList.toggle('complete', done === total && total > 0);
+  }
+}
+
+function updateOverall() {
+  let totalAll = 0, doneAll = 0;
+  for (let d = 1; d <= 14; d++) {
+    const { total, done } = countTasks(d);
+    totalAll += total; doneAll += done;
+  }
+  const pct = totalAll ? Math.round(doneAll/totalAll*100) : 0;
+  document.getElementById('overall-bar').style.width = pct + '%';
+  document.getElementById('overall-pct').textContent = pct + '%';
+  document.getElementById('tasks-done').textContent = `${doneAll} tasks done`;
+  document.getElementById('tasks-total').textContent = `${totalAll} total`;
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1500);
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+load();
+buildAll();
+
+// Determine starting day
+const today = new Date();
+const diffDays = Math.floor((today - START) / 86400000) + 1;
+const startDay = Math.max(1, Math.min(14, diffDays));
+
+goToDay(startDay);
+
+for (let d = 1; d <= 14; d++) updateCounts(d);
+updateOverall();
+</script>
+</body>
+</html>
