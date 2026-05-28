@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tank 150 — ICP Trend Dashboard</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600&display=swap');
+:root{
+  --bg:#04080f;--glass:rgba(255,255,255,0.04);--glass-b:rgba(255,255,255,0.09);
+  --ocean:#0D3B6E;--ocean-lt:#1a5499;--teal:#0E7C7B;--teal-lt:#13a8a7;
+  --green:#1A7A3A;--green-lt:#27ae60;--red:#C0392B;--red-lt:#e74c3c;
+  --amber:#C47800;--amber-lt:#f0a500;--purple:#6B3FA0;--purple-lt:#8e5bc8;
+  --text:#e8edf5;--muted:#5a7090;--muted-lt:#8899aa;--r:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg)}
+body{font-family:'DM Mono',monospace;color:var(--text);min-height:100vh;padding-bottom:80px;
+  background:radial-gradient(ellipse 100% 50% at 10% 0%,rgba(14,124,123,0.15) 0%,transparent 55%),
+    radial-gradient(ellipse 70% 40% at 90% 100%,rgba(13,59,110,0.18) 0%,transparent 50%),var(--bg);}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(14,124,123,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(14,124,123,0.03) 1px,transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 100%);}
+
+/* HEADER */
+.hdr{position:sticky;top:0;z-index:100;background:rgba(4,8,15,0.92);
+  backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid rgba(14,124,123,0.2);
+  padding:16px 24px 14px;box-shadow:0 4px 32px rgba(0,0,0,0.5);}
+.hdr-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.hdr h1{font-family:'Fraunces',serif;font-size:22px;font-weight:600;color:#fff;letter-spacing:-0.3px}
+.tbadge{background:linear-gradient(135deg,var(--ocean),var(--ocean-lt));color:#fff;
+  font-size:10px;padding:4px 11px;border-radius:20px;font-weight:500;letter-spacing:1px;margin-left:8px;
+  box-shadow:0 3px 10px rgba(13,59,110,0.5),inset 0 1px 0 rgba(255,255,255,0.15);}
+.dates{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.dpill{background:rgba(255,255,255,0.06);border:1px solid var(--glass-b);
+  border-radius:20px;padding:5px 14px;font-size:10px;color:var(--muted-lt);letter-spacing:0.5px;}
+.dpill.latest{border-color:rgba(14,124,123,0.5);color:var(--teal-lt);background:rgba(14,124,123,0.1);}
+.home-btn{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:#fff;text-decoration:none;padding:7px 15px;background:linear-gradient(135deg,var(--teal),var(--teal-lt));border:1px solid rgba(19,168,167,0.5);border-radius:20px;font-weight:500;letter-spacing:0.5px;box-shadow:0 4px 16px rgba(14,124,123,0.5),inset 0 1px 0 rgba(255,255,255,0.2);transition:all 0.25s;transform:perspective(200px) translateZ(0);}
+.home-btn:hover{box-shadow:0 6px 24px rgba(14,124,123,0.7);transform:perspective(200px) translateZ(5px) translateY(-1px);}
+.dsep{color:var(--muted);font-size:12px}
+
+/* FILTERS */
+.fbar{max-width:1400px;margin:16px auto 0;padding:0 24px;display:flex;gap:8px;flex-wrap:wrap}
+.fb{padding:8px 16px;border-radius:50px;border:1px solid var(--glass-b);background:var(--glass);
+  color:var(--muted-lt);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;
+  transition:all 0.25s;box-shadow:0 2px 8px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.04);}
+.fb:hover{background:rgba(255,255,255,0.07);color:var(--text)}
+.fb.on{background:linear-gradient(135deg,var(--ocean),var(--ocean-lt));
+  border-color:rgba(26,84,153,0.5);color:#fff;
+  box-shadow:0 3px 14px rgba(13,59,110,0.5),inset 0 1px 0 rgba(255,255,255,0.15);}
+
+/* SUMMARY */
+.sum{max-width:1400px;margin:16px auto;padding:0 24px;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.sc{background:linear-gradient(145deg,rgba(255,255,255,0.05),rgba(255,255,255,0.01));
+  border:1px solid var(--glass-b);border-radius:var(--r);padding:13px 15px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.06);}
+.sl{font-size:10px;color:var(--muted);letter-spacing:1.5px;margin-bottom:5px}
+.sv{font-size:24px;font-weight:600;font-family:'Fraunces',serif}
+.ss{font-size:10px;color:var(--muted-lt);margin-top:3px}
+.c-ok{color:var(--green-lt)}.c-lo{color:var(--red-lt)}.c-hi{color:var(--amber-lt)}
+.c-na{color:var(--muted)}.c-tl{color:var(--teal-lt)}
+
+/* SECTION HEADING */
+.sh{max-width:1400px;margin:24px auto 12px;padding:0 24px;
+  display:flex;align-items:center;gap:14px}
+.sh-label{font-size:10px;letter-spacing:2.5px;color:var(--muted-lt);white-space:nowrap}
+.sh-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,0.1),transparent)}
+.sh-count{font-size:10px;color:var(--muted);white-space:nowrap}
+
+/* GRID */
+.grid{max-width:1400px;margin:0 auto;padding:0 24px;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+
+/* CARD */
+.card{background:linear-gradient(160deg,rgba(255,255,255,0.055),rgba(255,255,255,0.01));
+  border:1px solid var(--glass-b);border-radius:var(--r);padding:16px 16px 12px;
+  box-shadow:0 4px 24px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,0.07);
+  transition:transform 0.3s,box-shadow 0.3s;position:relative;overflow:hidden;}
+.card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.09);}
+.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:0 2px 2px 0}
+.s-ok::before{background:linear-gradient(180deg,var(--green-lt),var(--green))}
+.s-lo::before{background:linear-gradient(180deg,var(--red-lt),var(--red))}
+.s-hi::before{background:linear-gradient(180deg,var(--amber-lt),var(--amber))}
+.s-na::before{background:var(--muted)}
+
+/* CARD HEADER */
+.ch{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.ct{font-size:13px;font-weight:500;color:var(--text)}
+.cu{font-size:10px;color:var(--muted-lt);margin-top:3px}
+.cbg{font-size:9px;padding:3px 9px;border-radius:20px;font-weight:500;white-space:nowrap;
+  flex-shrink:0;margin-left:8px;letter-spacing:0.5px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.1);}
+.bg-ok{background:rgba(26,122,58,0.25);color:#5dbb78;border:1px solid rgba(26,122,58,0.35)}
+.bg-lo{background:rgba(192,57,43,0.25);color:#f1948a;border:1px solid rgba(192,57,43,0.35)}
+.bg-hi{background:rgba(196,120,0,0.25);color:#f0a500;border:1px solid rgba(196,120,0,0.35)}
+.bg-na{background:rgba(90,112,144,0.18);color:var(--muted-lt);border:1px solid rgba(90,112,144,0.25)}
+.tup{color:var(--green-lt)}.tdn{color:var(--red-lt)}.tfl{color:var(--muted)}
+
+/* DOSE BAR */
+.ds{margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06)}
+.dl{font-size:9px;color:var(--muted);letter-spacing:1.5px;margin-bottom:6px}
+.dbars{display:flex;gap:5px;align-items:flex-end;height:44px}
+.dbw{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
+.dbar{width:100%;border-radius:3px 3px 0 0;min-height:3px;transition:height 0.4s}
+.dvl{font-size:9px;color:var(--muted-lt);text-align:center;overflow:hidden;width:100%}
+.ddl{font-size:9px;color:var(--muted);text-align:center;margin-top:3px}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-inner">
+    <div style="display:flex;align-items:center">
+      <h1>🪸 ICP Trend Dashboard</h1>
+      <span class="tbadge">TANK 150 · 150 GAL</span>
+    </div>
+    <a href="index.html" class="home-btn">← Hub</a>
+    <div class="dates">
+      <span class="dpill">ICP 1 — 27 Feb 2026</span>
+      <span class="dsep">→</span>
+      <span class="dpill">ICP 2 — 29 Apr 2026</span>
+      <span class="dsep">→</span>
+      <span class="dpill latest">ICP 3 — 27 May 2026 ← Latest</span>
+    </div>
+  </div>
+</div>
+
+<div class="fbar">
+  <button class="fb on" onclick="filt('all',this)">All Elements</button>
+  <button class="fb" onclick="filt('major',this)">Major Parameters</button>
+  <button class="fb" onclick="filt('daily',this)">Daily Traces + Dosing</button>
+  <button class="fb" onclick="filt('corr',this)">Correction Elements</button>
+  <button class="fb" onclick="filt('pump',this)">Pump Settings</button>
+  <button class="fb" onclick="filt('lo',this)">🔴 Below Target</button>
+  <button class="fb" onclick="filt('hi',this)">🟡 Above Target</button>
+  <button class="fb" onclick="filt('ok',this)">✅ In Target</button>
+</div>
+
+<div class="sum" id="sum"></div>
+<div id="root"></div>
+
+<script>
+const DATES=['27 Feb','29 Apr','27 May'];
+const D={
+  // MAJOR
+  Calcium:    {v:[490,459,449],    u:'mg/L', lo:420, hi:440, cat:'major', doses:null, du:null},
+  Alkalinity: {v:[null,6.8,8.0],  u:'dKH',  lo:7.8, hi:8.5, cat:'major', doses:[null,139,139], du:'ml/day pump'},
+  Salinity:   {v:[null,38.8,36.0],u:'PSU',  lo:34,  hi:35,  cat:'major', doses:null, du:null},
+  Magnesium:  {v:[1316,1322,1352],u:'mg/L', lo:1300,hi:1400,cat:'major', doses:null, du:null},
+  Potassium:  {v:[390,398,402],   u:'mg/L', lo:400, hi:420, cat:'major', doses:null, du:null},
+  Bromide:    {v:[82,87,86],      u:'mg/L', lo:80,  hi:90,  cat:'major', doses:null, du:null},
+  Rubidium:   {v:[315,295.6,277.2],u:'µg/L',lo:250,hi:310, cat:'major', doses:null, du:null},
+  Molybdenum: {v:[13.0,13.8,14.8],u:'µg/L',lo:13,  hi:17,  cat:'major', doses:null, du:null},
+  // CORRECTION
+  Strontium:  {v:[6.8,5.3,6.5],  u:'mg/L', lo:9,   hi:12,  cat:'corr',  doses:null, du:null},
+  Fluoride:   {v:[0.95,0.66,0.85],u:'mg/L',lo:1.0, hi:2.0, cat:'corr',  doses:null, du:null},
+  Barium:     {v:[8.44,5.68,4.13],u:'µg/L',lo:10,  hi:20,  cat:'corr',  doses:null, du:null},
+  Zinc:       {v:[0.76,0.19,0.38],u:'µg/L',lo:4.0, hi:6.0, cat:'corr',  doses:null, du:null},
+  Caesium:    {v:[1.36,1.34,1.19],u:'µg/L',lo:4,   hi:6,   cat:'corr',  doses:null, du:null},
+  // DAILY DOSED
+  Iron:       {v:[0.03,0.05,0.08],u:'µg/L',lo:0.70,hi:1.00,cat:'daily', doses:[4.5,5.0,17.5], du:'ml/day Classic'},
+  Copper:     {v:[0.38,0.07,0.125],u:'µg/L',lo:0.40,hi:0.60,cat:'daily',doses:[16.5,18.0,24.0],du:'ml/day NANO'},
+  Cobalt:     {v:[0.36,0.11,0.24],u:'µg/L',lo:0.40,hi:0.60,cat:'daily', doses:[6.0,6.4,6.5],  du:'ml/day Classic'},
+  Manganese:  {v:[null,0.11,0.135],u:'µg/L',lo:0.40,hi:0.60,cat:'daily',doses:[26.5,32.5,32.5],du:'ml/day Classic'},
+  Chromium:   {v:[0.46,0.37,0.74],u:'µg/L',lo:0.35,hi:0.55,cat:'daily', doses:[1.0,1.6,1.7],  du:'ml/day Classic'},
+  Selenium:   {v:[0.327,0.278,0.339],u:'µg/L',lo:0.35,hi:0.55,cat:'daily',doses:[0.3,0.5,7.9],du:'ml/day NANO'},
+  Vanadium:   {v:[0.56,0.54,0.695],u:'µg/L',lo:1.0,hi:2.0,cat:'daily',  doses:[3,5,9],        du:'drops/day'},
+  Nickel:     {v:[2.12,1.56,2.82],u:'µg/L', lo:2.5, hi:2.5,cat:'daily',  doses:[5.0,5.5,5.5], du:'ml/day Classic'},
+  Iodine:     {v:[92.5,44.5,58.3],u:'µg/L', lo:75,  hi:95, cat:'daily',  doses:[0,4,4],        du:'drops/day'},
+  // PUMP
+  'Alk Pump': {v:[null,139,139],  u:'ml/day',lo:130,hi:145, cat:'pump',  doses:null, du:null},
+  'Ca Pump':  {v:[null,126,126],  u:'ml/day',lo:120,hi:135, cat:'pump',  doses:null, du:null},
+};
+
+function stat(e){
+  const r=D[e].v.filter(x=>x!==null);
+  if(!r.length)return'na';
+  const l=r[r.length-1];
+  return l<D[e].lo?'lo':l>D[e].hi?'hi':'ok';
+}
+function trnd(e){
+  const r=D[e].v.filter(x=>x!==null);
+  if(r.length<2)return'fl';
+  const d=r[r.length-1]-r[r.length-2];
+  return d>0.001?'up':d<-0.001?'dn':'fl';
+}
+function fmt(v,u){
+  if(v===null||v===undefined)return'—';
+  if(u==='mg/L'&&v>100)return Math.round(v).toLocaleString();
+  if(v>=100)return Math.round(v).toString();
+  if(v>=10)return v.toFixed(1);
+  if(v>=1)return v.toFixed(2);
+  return v.toFixed(3);
+}
+
+function mkSVG(e){
+  const d=D[e];
+  const W=268,H=100,PL=8,PR=26,PT=12,PB=24;
+  const pw=W-PL-PR,ph=H-PT-PB;
+  const real=d.v.filter(x=>x!==null);
+  if(!real.length)return`<div style="height:${H}px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:11px">No ICP data</div>`;
+  const allY=[...real,d.lo,d.hi];
+  const yPad=(Math.max(...allY)-Math.min(...allY))*0.3||Math.max(...allY)*0.3||1;
+  const yMin=Math.max(0,Math.min(...allY)-yPad);
+  const yMax=Math.max(...allY)+yPad;
+  const yr=yMax-yMin;
+  const xp=i=>PL+(i/2)*pw;
+  const yp=v=>PT+ph-((v-yMin)/yr*ph);
+  const st=stat(e);
+  const lc=st==='ok'?'#27ae60':st==='lo'?'#e74c3c':st==='hi'?'#f0a500':'#5a7090';
+  const tyhi=yp(Math.min(d.hi,yMax));
+  const tylo=yp(Math.max(d.lo,yMin));
+  // Build line
+  let path='',pts=[];
+  d.v.forEach((v,i)=>{
+    if(v!==null){const x=xp(i),y=yp(v);path+=(path?`L${x},${y}`:`M${x},${y}`);pts.push({x,y,v,i});}
+  });
+  // Area fill under line
+  let area='';
+  if(pts.length>1){
+    area=`<path d="${path}L${pts[pts.length-1].x},${PT+ph}L${pts[0].x},${PT+ph}Z" fill="${lc}" opacity="0.07"/>`;
+  }
+  const fid='g'+e.replace(/\W/g,'_');
+  const dots=pts.map((p,idx)=>{
+    const isLast=p.i===d.v.length-1||d.v.slice(p.i+1).every(x=>x===null);
+    const prevPt=idx>0?pts[idx-1]:null;
+    const ly=p.y>PT+18?p.y-9:p.y+14;
+    const lx=p.x;
+    const fmtV=fmt(p.v,d.u);
+    return`
+      <circle cx="${p.x}" cy="${p.y}" r="${isLast?5:3.5}" fill="${lc}" opacity="${isLast?1:0.65}"
+        ${isLast?`filter="url(#${fid})"`:''} stroke="${isLast?'rgba(255,255,255,0.2)':'none'}" stroke-width="1"/>
+      ${isLast?`<text x="${lx}" y="${ly}" text-anchor="middle" font-size="9" font-weight="600" fill="${lc}">${fmtV}</text>`:''}`;
+  }).join('');
+  // ICP date labels on x axis
+  const xlabels=d.v.map((v,i)=>{
+    const col=i===d.v.length-1?'rgba(19,168,167,0.9)':'rgba(90,112,144,0.7)';
+    const fw=i===d.v.length-1?'600':'400';
+    return`<text x="${xp(i)}" y="${H-4}" text-anchor="middle" font-size="7.5" fill="${col}" font-weight="${fw}">${DATES[i]}</text>`;
+  }).join('');
+  // Connecting lines between real points
+  const conLine=pts.length>1?`<path d="${path}" fill="none" stroke="${lc}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.85" filter="url(#${fid})"/>`:'';
+  return`<svg viewBox="0 0 ${W} ${H}" width="100%" style="overflow:visible" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="${fid}" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <!-- Target band -->
+    <rect x="${PL}" y="${Math.min(tyhi,tylo)}" width="${pw}" height="${Math.abs(tylo-tyhi)+1}"
+      fill="rgba(14,124,123,0.08)" stroke="rgba(14,124,123,0.28)" stroke-width="0.8" stroke-dasharray="4,3" rx="1"/>
+    <!-- Target labels -->
+    <text x="${W-PR+4}" y="${Math.min(tyhi,tylo)+5}" font-size="7" fill="rgba(19,168,167,0.65)">${fmt(d.hi,d.u)}</text>
+    <text x="${W-PR+4}" y="${Math.max(tyhi,tylo)}" font-size="7" fill="rgba(19,168,167,0.65)">${fmt(d.lo,d.u)}</text>
+    <!-- Area + Line -->
+    ${area}${conLine}${dots}${xlabels}
+  </svg>`;
+}
+
+function mkDose(doses,du){
+  if(!doses||doses.every(d=>d===null))return'';
+  const real=doses.filter(d=>d!==null);
+  if(!real.length)return'';
+  const max=Math.max(...real)||1;
+  const bars=doses.map((d,i)=>{
+    const h=d!==null?Math.max((d/max)*36,3):3;
+    const isLast=i===doses.length-1;
+    const col=isLast?'var(--teal-lt)':'rgba(14,124,123,0.35)';
+    const shadow=isLast?'0 0 10px rgba(19,168,167,0.6)':'none';
+    const lbl=d!==null?(d>=10?Math.round(d):d>=1?d.toFixed(1):d.toFixed(2)):'—';
+    return`<div class="dbw">
+      <div class="dvl">${lbl}</div>
+      <div class="dbar" style="height:${h}px;background:${col};box-shadow:${shadow}"></div>
+    </div>`;
+  }).join('');
+  return`<div class="ds">
+    <div class="dl">DOSE HISTORY (${du})</div>
+    <div class="dbars">${bars}</div>
+    <div style="display:flex;justify-content:space-around;margin-top:2px">
+      ${DATES.map((d,i)=>`<div class="ddl">${d}</div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function buildSummary(){
+  const ct={ok:0,lo:0,hi:0,na:0};
+  const total=Object.keys(D).filter(e=>D[e].cat!=='pump').length;
+  Object.keys(D).filter(e=>D[e].cat!=='pump').forEach(e=>{ct[stat(e)]++;});
+  // Improvement count
+  let improved=0;
+  Object.keys(D).forEach(e=>{
+    const r=D[e].v.filter(x=>x!==null);
+    if(r.length>=2){const lo=D[e].lo,hi=D[e].hi,first=r[0],last=r[r.length-1];
+      if((first<lo&&last>first)||(first>hi&&last<first)||(lo<=last&&last<=hi&&!(lo<=first&&first<=hi)))improved++;}
+  });
+  document.getElementById('sum').innerHTML=`
+    <div class="sc"><div class="sl">IN TARGET</div><div class="sv c-ok">${ct.ok}</div><div class="ss">of ${total} elements</div></div>
+    <div class="sc"><div class="sl">BELOW TARGET</div><div class="sv c-lo">${ct.lo}</div><div class="ss">need action</div></div>
+    <div class="sc"><div class="sl">ABOVE TARGET</div><div class="sv c-hi">${ct.hi}</div><div class="ss">reduce or settle</div></div>
+    <div class="sc"><div class="sl">IMPROVING</div><div class="sv c-tl">${improved}</div><div class="ss">trending right direction</div></div>
+    <div class="sc"><div class="sl">ICP CYCLES</div><div class="sv c-tl">3</div><div class="ss">Feb → Apr → May 2026</div></div>
+    <div class="sc"><div class="sl">DAYS TRACKED</div><div class="sv c-na">89</div><div class="ss">27 Feb to 27 May</div></div>
+  `;
+}
+
+const CAT_META={
+  major:{label:'MAJOR PARAMETERS',color:'var(--ocean-lt)'},
+  daily:{label:'DAILY TRACE ELEMENTS',color:'var(--teal-lt)'},
+  corr: {label:'CORRECTION ELEMENTS',color:'var(--red-lt)'},
+  pump: {label:'PUMP SETTINGS (Alk & Ca)',color:'var(--amber-lt)'},
+};
+
+function buildCards(f){
+  const root=document.getElementById('root');
+  root.innerHTML='';
+  ['major','daily','corr','pump'].forEach(cat=>{
+    const elems=Object.keys(D).filter(e=>{
+      if(D[e].cat!==cat)return false;
+      const s=stat(e);
+      if(f==='all')return true;
+      if(f==='lo'||f==='hi'||f==='ok')return s===f;
+      return f===cat;
+    });
+    if(!elems.length)return;
+    const meta=CAT_META[cat];
+    const sh=document.createElement('div');
+    sh.className='sh';
+    sh.innerHTML=`<div class="sh-label" style="color:${meta.color}">${meta.label}</div><div class="sh-line"></div><div class="sh-count">${elems.length} element${elems.length>1?'s':''}</div>`;
+    root.appendChild(sh);
+    const grid=document.createElement('div');
+    grid.className='grid';
+    elems.forEach(e=>{
+      const d=D[e],s=stat(e),tr=trnd(e);
+      const ti=tr==='up'?'↑':tr==='dn'?'↓':'→';
+      const tc=tr==='up'?'tup':tr==='dn'?'tdn':'tfl';
+      const last=d.v.filter(x=>x!==null).pop();
+      const first=d.v.filter(x=>x!==null)[0];
+      const pct=first&&last?((last-first)/first*100):null;
+      const pctStr=pct!==null?`${pct>0?'+':''}${pct.toFixed(1)}% since ICP 1`:'';
+      const card=document.createElement('div');
+      card.className=`card s-${s}`;
+      card.innerHTML=`
+        <div class="ch">
+          <div style="flex:1;min-width:0">
+            <div class="ct">${e} <span class="${tc}" style="font-size:14px">${ti}</span></div>
+            <div class="cu">
+              Latest: <strong style="color:var(--text)">${fmt(last,d.u)}</strong> ${d.u}
+              &nbsp;·&nbsp; Target: ${d.lo}–${d.hi}
+              ${pctStr?`&nbsp;·&nbsp;<span style="color:${pct>0?'var(--green-lt)':'var(--red-lt)'};font-size:9px">${pctStr}</span>`:''}
+            </div>
+          </div>
+          <span class="cbg bg-${s}">${s==='ok'?'IN TARGET':s==='lo'?'BELOW':s==='hi'?'ABOVE':'NO DATA'}</span>
+        </div>
+        ${mkSVG(e)}
+        ${mkDose(d.doses,d.du)}`;
+      grid.appendChild(card);
+    });
+    root.appendChild(grid);
+  });
+  if(!root.children.length){
+    root.innerHTML=`<div style="text-align:center;padding:80px;color:var(--muted);font-size:13px">No elements match this filter</div>`;
+  }
+}
+
+function filt(f,btn){
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  buildCards(f);
+}
+
+buildSummary();
+buildCards('all');
+</script>
+</body>
+</html>
