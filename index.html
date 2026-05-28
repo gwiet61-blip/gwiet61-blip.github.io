@@ -265,6 +265,47 @@
     .tanks { grid-template-columns: 1fr; }
     .secondary-grid { grid-template-columns: 1fr; }
   }
+  /* Dashboard button */
+  .dash-btn {
+    display: block;
+    text-decoration: none;
+    background: linear-gradient(135deg, rgba(107,63,160,0.28), rgba(107,63,160,0.08));
+    border: 1.5px solid rgba(142,91,200,0.5);
+    border-radius: 18px;
+    padding: 20px 22px;
+    margin-bottom: 16px;
+    transition: all 0.3s;
+    transform: perspective(400px) translateZ(0);
+    box-shadow: 0 4px 24px rgba(107,63,160,0.25), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .dash-btn:hover {
+    background: linear-gradient(135deg, rgba(107,63,160,0.42), rgba(107,63,160,0.18));
+    border-color: rgba(142,91,200,0.75);
+    transform: perspective(400px) translateZ(8px) translateY(-3px);
+    box-shadow: 0 10px 32px rgba(107,63,160,0.4), inset 0 1px 0 rgba(255,255,255,0.12);
+  }
+  .dash-btn:active { transform: perspective(400px) translateZ(2px) translateY(-1px); }
+  .dash-inner { display: flex; align-items: center; gap: 16px; }
+  .dash-icon {
+    font-size: 32px;
+    filter: drop-shadow(0 0 14px rgba(142,91,200,0.7));
+    flex-shrink: 0;
+    transition: transform 0.3s;
+  }
+  .dash-btn:hover .dash-icon { transform: scale(1.12); }
+  .dash-text-title {
+    font-family: Fraunces, serif;
+    font-size: 17px; font-weight: 600; color: #fff;
+    text-shadow: 0 0 20px rgba(142,91,200,0.4);
+  }
+  .dash-text-sub { font-size: 11px; color: rgba(195,155,211,0.85); margin-top: 3px; letter-spacing: 0.3px; }
+  .dash-arrow {
+    margin-left: auto; font-size: 20px;
+    color: rgba(142,91,200,0.8);
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+  .dash-btn:hover .dash-arrow { transform: translateX(5px); }
 </style>
 </head>
 <body>
