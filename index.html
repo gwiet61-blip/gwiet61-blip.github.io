@@ -306,6 +306,29 @@
     flex-shrink: 0;
   }
   .dash-btn:hover .dash-arrow { transform: translateX(5px); }
+  /* Tank 90 Dashboard button — teal theme */
+  .dash-btn-90 {
+    display: block;
+    text-decoration: none;
+    background: linear-gradient(135deg, rgba(14,124,123,0.25), rgba(14,124,123,0.08));
+    border: 1.5px solid rgba(19,168,167,0.45);
+    border-radius: 18px;
+    padding: 20px 22px;
+    margin-bottom: 16px;
+    transition: all 0.3s;
+    transform: perspective(400px) translateZ(0);
+    box-shadow: 0 4px 20px rgba(14,124,123,0.2), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .dash-btn-90:hover {
+    background: linear-gradient(135deg, rgba(14,124,123,0.38), rgba(14,124,123,0.15));
+    border-color: rgba(19,168,167,0.75);
+    transform: perspective(400px) translateZ(6px) translateY(-2px);
+    box-shadow: 0 8px 28px rgba(14,124,123,0.38), inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  .dash-btn-90:active { transform: perspective(400px) translateZ(2px) translateY(-1px); }
+  .dash-btn-90 .dash-icon { filter: drop-shadow(0 0 10px rgba(19,168,167,0.65)); }
+  .dash-btn-90 .dash-text-sub { color: rgba(77,207,206,0.85); }
+  .dash-btn-90 .dash-arrow { color: rgba(19,168,167,0.8); }
 </style>
 </head>
 <body>
@@ -344,8 +367,19 @@
     <div class="dash-inner">
       <span class="dash-icon">📈</span>
       <div>
-        <div class="dash-text-title">ICP Trend Dashboard</div>
-        <div class="dash-text-sub">3 ICP cycles · 24 elements · Tank 150 dosing history</div>
+        <div class="dash-text-title">Tank 150 — ICP Trend Dashboard</div>
+        <div class="dash-text-sub">3 ICP cycles · 24 elements · SPS · Macroalgae · MSR235629/634</div>
+      </div>
+      <span class="dash-arrow">→</span>
+    </div>
+  </a>
+
+  <a href="Tank90_ICP_Dashboard.html" class="dash-btn dash-btn-90">
+    <div class="dash-inner">
+      <span class="dash-icon">📈</span>
+      <div>
+        <div class="dash-text-title">Tank 90 — ICP Trend Dashboard</div>
+        <div class="dash-text-sub">2 ICP cycles · 25 elements · LPS · Hammers · MSR235789</div>
       </div>
       <span class="dash-arrow">→</span>
     </div>
@@ -382,11 +416,7 @@
       <div class="sec-link-title">ICP-MS Spreadsheet</div>
     </a>
 
-    <a href="Tank90_ICP_Dashboard.html" class="sec-link">
-      <span class="sec-link-icon">📊</span>
-      <div class="sec-link-label">Tank 90</div>
-      <div class="sec-link-title">ICP Trend Dashboard</div>
-    </a>
+
     <a href="Reef_Moonshiners_ICP_MS_Tank90.xlsx" class="sec-link">
       <span class="sec-link-icon">📊</span>
       <div class="sec-link-label">Tank 90</div>
