@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Tank 150 — 2-Week Dosing Schedule</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,600&display=swap');
+:root{
+  --bg:#04080f;--glass:rgba(255,255,255,0.04);--glass-b:rgba(255,255,255,0.09);
+  --teal:#0E7C7B;--teal-lt:#13a8a7;--purple:#6B3FA0;--purple-lt:#8e5bc8;
+  --green:#1A7A3A;--green-lt:#27ae60;--red:#C0392B;--red-lt:#e74c3c;
+  --amber:#C47800;--amber-lt:#f0a500;--ocean:#0D3B6E;--ocean-lt:#1a5499;
+  --text:#e8edf5;--muted:#5a7090;--muted-lt:#8899aa;--r:16px;--ck:32px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg)}
+body{font-family:'DM Mono',monospace;
+  background:radial-gradient(ellipse 100% 50% at 80% 0%,rgba(107,63,160,0.2) 0%,transparent 55%),
+    radial-gradient(ellipse 70% 50% at 20% 100%,rgba(13,59,110,0.18) 0%,transparent 50%),var(--bg);
+  color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(107,63,160,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(107,63,160,0.04) 1px,transparent 1px);
+  background-size:48px 48px;pointer-events:none;z-index:0;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%);}
+.bubbles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bubble{position:absolute;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,rgba(107,63,160,0.25),rgba(107,63,160,0.04));
+  border:1px solid rgba(107,63,160,0.18);animation:rise linear infinite;}
+@keyframes rise{0%{transform:translateY(105vh) scale(0.7);opacity:0}10%{opacity:1}90%{opacity:0.3}100%{transform:translateY(-10vh) scale(1.1);opacity:0}}
+.header{position:sticky;top:0;z-index:100;background:rgba(4,8,15,0.88);
+  backdrop-filter:blur(24px);border-bottom:1px solid rgba(107,63,160,0.2);
+  padding:14px 20px 12px;box-shadow:0 4px 32px rgba(0,0,0,0.5);}
+.header-top{display:flex;align-items:center;justify-content:space-between}
+.header h1{font-family:'Fraunces',serif;font-size:21px;font-weight:600;color:#fff}
+.tank-badge{background:linear-gradient(135deg,var(--purple),var(--purple-lt));color:#fff;
+  font-size:10px;padding:4px 11px;border-radius:20px;font-weight:500;letter-spacing:1px;margin-left:8px;
+  box-shadow:0 3px 10px rgba(107,63,160,0.5);}
+.home-btn{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:#fff;
+  text-decoration:none;padding:7px 15px;
+  background:linear-gradient(135deg,var(--teal),var(--teal-lt));
+  border:1px solid rgba(19,168,167,0.5);border-radius:20px;margin-bottom:8px;
+  font-weight:500;box-shadow:0 4px 16px rgba(14,124,123,0.5);transition:all 0.25s;}
+.home-btn:hover{box-shadow:0 6px 24px rgba(14,124,123,0.7);transform:translateY(-1px);}
+.header-sub{font-size:11px;color:var(--muted-lt);margin-top:2px}
+.progress-bar{height:5px;border-radius:3px;overflow:hidden;background:rgba(255,255,255,0.06);margin-top:10px;}
+.progress-fill{height:100%;border-radius:3px;
+  background:linear-gradient(90deg,var(--purple),var(--purple-lt),var(--teal-lt));
+  background-size:200% 100%;animation:shimmer 3s linear infinite;transition:width 0.5s;width:0%;
+  box-shadow:0 0 12px rgba(107,63,160,0.6);}
+@keyframes shimmer{0%{background-position:0%}100%{background-position:200%}}
+.progress-label{font-size:11px;color:var(--muted);margin-top:5px;display:flex;justify-content:space-between}
+.day-nav{display:flex;gap:5px;overflow-x:auto;padding:10px 20px 8px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.day-nav::-webkit-scrollbar{display:none}
+.day-tab{flex-shrink:0;padding:7px 13px;border-radius:50px;border:1px solid var(--glass-b);
+  background:var(--glass);color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;
+  cursor:pointer;transition:all 0.25s;white-space:nowrap;}
+.day-tab:hover{background:rgba(255,255,255,0.07);color:var(--text)}
+.day-tab.active{background:linear-gradient(135deg,var(--purple),var(--purple-lt));
+  border-color:rgba(142,91,200,0.4);color:#fff;
+  box-shadow:0 3px 14px rgba(107,63,160,0.5);}
+.day-tab.complete{border-color:rgba(26,122,58,0.4);color:var(--green-lt)}
+.day-tab.active.complete{background:linear-gradient(135deg,var(--green),var(--green-lt));}
+.day-tab.has-event{border-color:rgba(196,120,0,0.4);color:var(--amber-lt)}
+.day-panels{padding:0 16px 110px}
+.day-panel{display:none}.day-panel.active{display:block;animation:fadeUp 0.25s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.day-header{padding:18px 0 14px;display:flex;align-items:center;justify-content:space-between}
+.day-title{font-family:'Fraunces',serif;font-size:28px;font-weight:600;color:#fff;line-height:1;}
+.day-date{font-size:11px;color:var(--muted-lt);margin-top:3px}
+.day-sub{font-size:10px;color:var(--purple-lt);margin-top:2px}
+.section-card{border-radius:var(--r);margin-bottom:10px;overflow:hidden;
+  background:linear-gradient(160deg,rgba(255,255,255,0.05),rgba(255,255,255,0.01));
+  border:1px solid var(--glass-b);
+  box-shadow:0 4px 24px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.07);}
+.section-header{padding:12px 16px 10px;display:flex;align-items:center;gap:10px;
+  border-bottom:1px solid rgba(255,255,255,0.06);}
+.section-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.section-title{font-size:10px;letter-spacing:2px;font-weight:500}
+.section-count{margin-left:auto;font-size:11px;color:var(--muted)}
+.pump-banner{padding:12px 16px;display:flex;gap:16px;flex-wrap:wrap;
+  background:linear-gradient(135deg,rgba(107,63,160,0.08),rgba(13,59,110,0.05));}
+.pump-item{display:flex;flex-direction:column;gap:3px}
+.pump-label{font-size:10px;color:var(--muted);letter-spacing:1.5px}
+.pump-value{font-size:13px;font-weight:500;background:linear-gradient(135deg,var(--purple-lt),var(--teal-lt));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.task-item{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.05);gap:14px;cursor:pointer;transition:background 0.2s;-webkit-user-select:none;user-select:none;position:relative;}
+.task-item::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:transparent;border-radius:0 2px 2px 0;transition:background 0.2s;}
+.task-item:last-child{border-bottom:none}
+.task-item:active{background:rgba(255,255,255,0.04)}
+.task-item.done{opacity:0.4}.task-item.done .task-name{text-decoration:line-through}
+.task-item.done::after{background:var(--green)}
+.checkbox{width:var(--ck);height:var(--ck);border-radius:9px;border:1.5px solid rgba(255,255,255,0.12);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.25s;background:rgba(255,255,255,0.03);}
+.task-item.done .checkbox{background:linear-gradient(135deg,var(--green),var(--green-lt));border-color:rgba(39,174,96,0.4);box-shadow:0 3px 12px rgba(26,122,58,0.5);}
+.checkmark{position:relative;width:16px;height:16px;opacity:0;transition:opacity 0.2s}
+.task-item.done .checkmark{opacity:1}
+.checkmark::before{content:'';position:absolute;width:5px;height:2px;background:#fff;border-radius:2px;left:1px;top:9px;transform:rotate(45deg)}
+.checkmark::after{content:'';position:absolute;width:10px;height:2px;background:#fff;border-radius:2px;left:4px;top:8px;transform:rotate(-45deg)}
+.task-info{flex:1;min-width:0}
+.task-name{font-size:13px;font-weight:500}
+.task-dose{font-size:11px;color:var(--muted-lt);margin-top:2px}
+.task-badge{font-size:9px;padding:4px 10px;border-radius:20px;font-weight:500;white-space:nowrap;flex-shrink:0;letter-spacing:0.5px;}
+.badge-diy{background:linear-gradient(135deg,rgba(26,122,58,0.28),rgba(26,122,58,0.1));color:#5dbb78;border:1px solid rgba(26,122,58,0.28);}
+.badge-rm{background:linear-gradient(135deg,rgba(107,63,160,0.28),rgba(107,63,160,0.1));color:#c39bd3;border:1px solid rgba(107,63,160,0.28);}
+.badge-dos{background:linear-gradient(135deg,rgba(14,124,123,0.28),rgba(14,124,123,0.1));color:#4dcfce;border:1px solid rgba(14,124,123,0.28);}
+.badge-corr{background:linear-gradient(135deg,rgba(192,57,43,0.28),rgba(192,57,43,0.1));color:#f1948a;border:1px solid rgba(192,57,43,0.28);}
+.badge-warn{background:linear-gradient(135deg,rgba(196,120,0,0.28),rgba(196,120,0,0.1));color:#f0a500;border:1px solid rgba(196,120,0,0.28);}
+.event-banner{margin-bottom:10px;padding:14px 16px;border-radius:var(--r);border-left:3px solid;display:flex;align-items:flex-start;gap:12px;backdrop-filter:blur(8px);}
+.event-banner.test{border-color:var(--green-lt);background:linear-gradient(135deg,rgba(26,122,58,0.14),rgba(26,122,58,0.04));}
+.event-banner.milestone{border-color:var(--purple-lt);background:linear-gradient(135deg,rgba(107,63,160,0.14),rgba(107,63,160,0.04));}
+.event-banner.warning{border-color:var(--amber-lt);background:linear-gradient(135deg,rgba(196,120,0,0.14),rgba(196,120,0,0.04));}
+.event-banner.icp{border-color:var(--teal-lt);background:linear-gradient(135deg,rgba(14,124,123,0.14),rgba(14,124,123,0.04));}
+.event-icon{font-size:22px;flex-shrink:0}
+.event-title{font-size:12px;font-weight:500;margin-bottom:3px}
+.event-text{font-size:11px;color:var(--muted-lt);line-height:1.6}
+.notes-area{border-radius:var(--r);overflow:hidden;margin-bottom:10px;background:rgba(255,255,255,0.02);border:1px solid var(--glass-b);}
+.notes-label{padding:9px 16px 6px;font-size:10px;letter-spacing:2px;color:var(--muted);border-bottom:1px solid rgba(255,255,255,0.05);}
+.notes-input{width:100%;background:transparent;border:none;outline:none;color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:11px 16px;min-height:60px;resize:none;line-height:1.7;}
+.notes-input::placeholder{color:rgba(90,112,144,0.45)}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:linear-gradient(135deg,var(--green),var(--green-lt));color:#fff;padding:11px 24px;border-radius:50px;font-size:12px;font-weight:500;transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);z-index:999;pointer-events:none;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(4,8,15,0.92);backdrop-filter:blur(24px);border-top:1px solid rgba(107,63,160,0.14);display:flex;padding:10px 20px 22px;gap:8px;z-index:100;}
+.nav-btn{flex:1;padding:13px 8px;background:rgba(255,255,255,0.04);border:1px solid var(--glass-b);border-radius:12px;color:var(--muted-lt);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;transition:all 0.25s;text-align:center;}
+.nav-btn:hover{background:rgba(255,255,255,0.08);color:var(--text)}
+.nav-btn:active{transform:scale(0.97)}
+.nav-btn.primary{background:linear-gradient(135deg,var(--purple),var(--purple-lt));border-color:rgba(142,91,200,0.4);color:#fff;box-shadow:0 4px 18px rgba(107,63,160,0.55);}
+</style>
+</head>
+<body>
+<div class="bubbles" id="bubbles"></div>
+<div class="header">
+  <div class="header-top">
+    <div style="display:flex;align-items:center">
+      <h1>🐠 Reef Dosing</h1><span class="tank-badge">TANK 150 · SPS</span>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:22px;font-family:Fraunces,serif;font-weight:600;background:linear-gradient(135deg,#fff,var(--purple-lt));-webkit-background-clip:text;-webkit-text-fill-color:transparent" id="overall-pct">0%</div>
+      <div style="font-size:10px;color:var(--muted)">complete</div>
+    </div>
+  </div>
+  <a href="index.html" class="home-btn">← Hub</a>
+  <div class="header-sub">24 JUN – 8 JUL 2026 · 2 WEEKS · SPS · DIY Fe/Mn/Cu</div>
+  <div class="progress-bar"><div class="progress-fill" id="overall-bar"></div></div>
+  <div class="progress-label"><span id="tasks-done">0 tasks done</span><span id="tasks-total">0 total</span></div>
+</div>
+<div class="day-nav" id="day-nav"></div>
+<div class="day-panels" id="day-panels"></div>
+<div class="toast" id="toast"></div>
+<div class="bottom-nav">
+  <button class="nav-btn" onclick="prevDay()">← Prev</button>
+  <button class="nav-btn primary" onclick="goToToday()">Today</button>
+  <button class="nav-btn" onclick="nextDay()">Next →</button>
+</div>
+<script>
+const START = new Date(2026,5,24); // June 24
+const DAYS = 14;
+const KEY = 'reef_t150_2wk_v1';
+
+// Daily doses
+const DAILIES = [
+  {name:'Iron (DIY Ferrous Gluconate)',    dose:'17.5 ml → sump high flow',      badge:'badge-diy'},
+  {name:'Copper (DIY CuCl₂ 37µg/mL)',     dose:'5.6 ml → sump high flow',       badge:'badge-diy'},
+  {name:'Manganese (DIY Mn Gluconate)',    dose:'32.5 ml → sump high flow',      badge:'badge-diy'},
+  {name:'Cobalt (RM Classic)',             dose:'6.5 ml → tank',                 badge:'badge-rm'},
+  {name:'Chromium (RM Classic)',           dose:'1.6 ml → tank',                 badge:'badge-rm'},
+  {name:'Selenium (RM NANO)',              dose:'7.9 ml → tank',                 badge:'badge-rm'},
+  {name:'Nickel (RM Classic)',             dose:'5.5 ml → tank',                 badge:'badge-rm'},
+  {name:'Vanadium',                        dose:'11 drops → tank',               badge:'badge-rm'},
+  {name:'Iodine (Seachem Reef Iodide)',    dose:'6–8 drops → tank',              badge:'badge-rm'},
+];
+
+// Events per day (1-indexed)
+function getEvents(d) {
+  const e = [];
+  if(d===1) e.push({type:'milestone',icon:'🧪',title:'DIY Solutions Active',
+    text:'Fe Gluconate, Mn Gluconate, CuCl₂ all mixed and in use. Same doses as RM Classic/NANO. Pipette for precision dosing.'});
+  if(d===1) e.push({type:'warning',icon:'⚠️',title:'Nutrients — Action Required',
+    text:'PO4 0.05 (approaching floor), NO3 3.4 (below floor). Resume TDO pellets DAILY. Stop rinsing frozen foods heavily. GFO reduced to 3 hrs/day (12–3pm).'});
+  if(d===3) e.push({type:'test',icon:'🧪',title:'Test Ca (Salifert)',
+    text:'Ca pump at 100 ml/day. Expected ~436–440 mg/L. If rising above 445: reduce to 80 ml/day. If falling below 425: increase to 120 ml/day.'});
+  if(d===5) e.push({type:'test',icon:'🧪',title:'Test PO4 + NO3',
+    text:'PO4 target: hold at 0.05–0.07 (do NOT let fall below 0.02). NO3 target: recovering toward 4–8 mg/L. Adjust TDO feeding based on results.'});
+  if(d===7) e.push({type:'milestone',icon:'⚗️',title:'Barium + Strontium Correction — Day 1',
+    text:'Barium: 18.80 ml/day × 4 days. Strontium: 4.40 ml/day × 5 days. Begin today.'});
+  if(d===8) e.push({type:'milestone',icon:'⚗️',title:'Fluoride Correction — Day 1',
+    text:'Fluoride: 29.00 ml/day × 6 days. Begin today alongside Barium/Strontium.'});
+  if(d===8) e.push({type:'milestone',icon:'⚗️',title:'Nickel Correction — Day 1',
+    text:'Nickel correction: 1.67 ml × 2 days.'});
+  if(d===10) e.push({type:'test',icon:'🧪',title:'Test Ca + Alk',
+    text:'Confirm Ca stable in 420–440 range. Alk should remain 7.8–8.5 (Trident 7.28–7.98) at 149 ml/day. Adjust Ca pump if needed.'});
+  if(d===11) e.push({type:'milestone',icon:'⚗️',title:'Zinc Correction — Day 1',
+    text:'Zinc: 0.52 ml × 3 days → sump.'});
+  if(d===14) e.push({type:'icp',icon:'📬',title:'SEND ICP SAMPLE — Tank 150',
+    text:'Take sample BEFORE daily dosing and before lights on. Note current Alk, Ca, Mg, PO4, NO3, salinity. Send with Tank 90 sample. MSR reference: ICP 4.'});
+  if(d===17) e.push({type:'milestone',icon:'⚗️',title:'Magnesium Correction Due',
+    text:'477 ml BRS Mag-Mix stock → sump. Split: 239 ml now, 238 ml in 1 hour.'});
+  return e;
+}
+
+// Corrections per day
+function getCorr(d) {
+  const c = [];
+  if(d>=7&&d<=10) c.push({name:'Barium',     dose:'18.80 ml → sump'});
+  if(d>=7&&d<=11) c.push({name:'Strontium',  dose:'4.40 ml → sump'});
+  if(d>=8&&d<=13) c.push({name:'Fluoride',   dose:'29.00 ml → sump'});
+  if(d===8||d===9) c.push({name:'Nickel corr',dose:'1.67 ml → sump'});
+  if(d>=11&&d<=13) c.push({name:'Zinc',       dose:'0.52 ml → sump'});
+  return c;
+}
+
+const WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function dd(d){const x=new Date(START);x.setDate(x.getDate()+d-1);return x;}
+function ds(d){const x=dd(d);return`${WD[x.getDay()]} ${x.getDate()} ${MO[x.getMonth()]} 2026`;}
+function sd(d){const x=dd(d);return`${WD[x.getDay()]} ${x.getDate()}`;}
+
+let state={},cur=1;
+function load(){try{state=JSON.parse(localStorage.getItem(KEY)||'{}');}catch(e){state={};}}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+function isCk(d,c,i){return!!state[`d${d}${c}${i}`];}
+function setCk(d,c,i,v){state[`d${d}${c}${i}`]=v;save();}
+function gn(d){return state[`n${d}`]||'';}
+function sn(d,v){state[`n${d}`]=v;save();}
+
+function build(){
+  const nav=document.getElementById('day-nav');
+  const panels=document.getElementById('day-panels');
+  for(let d=1;d<=DAYS;d++){
+    const cs=getCorr(d),ev=getEvents(d);
+    const dt=document.createElement('button');
+    dt.className='day-tab'+(cs.length?' has-corrections':'')+((!cs.length&&ev.length)?' has-event':'');
+    dt.id=`dt${d}`;dt.textContent=sd(d);dt.onclick=()=>gd(d);
+    nav.appendChild(dt);
+    const p=document.createElement('div');p.className='day-panel';p.id=`dp${d}`;
+    p.innerHTML=bd(d,cs,ev);panels.appendChild(p);
+  }
+}
+
+function bd(d,cs,ev){
+  let h=`<div class="day-header">
+    <div><div class="day-title">Day ${d}</div>
+    <div class="day-date">${ds(d)}</div>
+    <div class="day-sub">Tank 150 · SPS · DIY Elements Active</div></div>
+    <div id="pct${d}" style="font-size:22px;font-family:Fraunces,serif;font-weight:600;text-align:right;background:linear-gradient(135deg,#fff,var(--purple-lt));-webkit-background-clip:text;-webkit-text-fill-color:transparent"></div>
+  </div>`;
+
+  ev.forEach(e=>{h+=`<div class="event-banner ${e.type}">
+    <div class="event-icon">${e.icon}</div>
+    <div><div class="event-title">${e.title}</div><div class="event-text">${e.text}</div></div>
+  </div>`;});
+
+  // Pumps
+  h+=`<div class="section-card"><div class="section-header">
+    <div class="section-dot" style="background:var(--amber);box-shadow:0 0 8px rgba(196,120,0,0.5)"></div>
+    <div class="section-title" style="color:var(--amber-lt)">DOS PUMPS — CONFIRMED SETTINGS</div>
+  </div><div class="pump-banner">
+    <div class="pump-item"><div class="pump-label">ALK (NaHCO₃)</div><div class="pump-value">149 ml/day ✓</div></div>
+    <div class="pump-item"><div class="pump-label">Ca (CaCl₂)</div><div class="pump-value">100 ml/day → monitor</div></div>
+    <div class="pump-item"><div class="pump-label">GFO</div><div class="pump-value">12:00–15:00 (3 hrs)</div></div>
+  </div></div>`;
+
+  // Corrections
+  if(cs.length){
+    h+=`<div class="section-card"><div class="section-header">
+      <div class="section-dot" style="background:var(--red);box-shadow:0 0 8px rgba(192,57,43,0.5)"></div>
+      <div class="section-title" style="color:var(--red-lt)">CORRECTIONS → SUMP</div>
+      <div class="section-count" id="cc${d}"></div></div>`;
+    cs.forEach((c,i)=>{h+=th(d,'corr',i,c.name,c.dose,'badge-corr',isCk(d,'corr',i));});
+    h+=`</div>`;
+  }
+
+  // DIY elements
+  const diy=DAILIES.filter(dl=>dl.badge==='badge-diy');
+  const rm=DAILIES.filter(dl=>dl.badge==='badge-rm');
+
+  h+=`<div class="section-card"><div class="section-header">
+    <div class="section-dot" style="background:var(--green);box-shadow:0 0 8px rgba(26,122,58,0.5)"></div>
+    <div class="section-title" style="color:var(--green-lt)">DIY ELEMENTS (Fe · Mn · Cu) — PIPETTE</div>
+    <div class="section-count" id="dc${d}"></div></div>`;
+  diy.forEach((dl,i)=>{h+=th(d,'diy',i,dl.name,dl.dose,dl.badge,isCk(d,'diy',i));});
+  h+=`</div>`;
+
+  h+=`<div class="section-card"><div class="section-header">
+    <div class="section-dot" style="background:var(--purple);box-shadow:0 0 8px rgba(107,63,160,0.5)"></div>
+    <div class="section-title" style="color:var(--purple-lt)">RM ELEMENTS</div>
+    <div class="section-count" id="rc${d}"></div></div>`;
+  rm.forEach((dl,i)=>{h+=th(d,'rm',i,dl.name,dl.dose,dl.badge,isCk(d,'rm',i));});
+  h+=`</div>`;
+
+  // Notes
+  h+=`<div class="notes-area"><div class="notes-label">NOTES / OBSERVATIONS</div>
+    <textarea class="notes-input" id="nt${d}" placeholder="Ca/Alk readings, coral observations, parameter tests..."
+      oninput="sn(${d},this.value)">${gn(d)}</textarea></div>`;
+  return h;
+}
+
+function th(d,cat,i,name,dose,badge,done){
+  return`<div class="task-item ${done?'done':''}" id="t${d}${cat}${i}" onclick="tt(${d},'${cat}',${i})">
+    <div class="checkbox"><div class="checkmark"></div></div>
+    <div class="task-info"><div class="task-name">${name}</div><div class="task-dose">${dose}</div></div>
+    <div class="task-badge ${badge}">${badge==='badge-diy'?'DIY':badge==='badge-rm'?'RM':badge==='badge-corr'?'SUMP':'TANK'}</div>
+  </div>`;
+}
+
+function tt(d,cat,i){
+  const was=isCk(d,cat,i);setCk(d,cat,i,!was);
+  document.getElementById(`t${d}${cat}${i}`)?.classList.toggle('done',!was);
+  uc(d);uo();if(!was)toast('✓ Done');
+}
+
+function gd(d){
+  document.querySelectorAll('.day-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.day-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(`dp${d}`)?.classList.add('active');
+  const tab=document.getElementById(`dt${d}`);tab?.classList.add('active');
+  tab?.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+  window.scrollTo({top:0,behavior:'smooth'});cur=d;uc(d);
+}
+function prevDay(){if(cur>1)gd(cur-1);}
+function nextDay(){if(cur<DAYS)gd(cur+1);}
+function goToToday(){const diff=Math.floor((new Date()-START)/86400000)+1;gd(Math.max(1,Math.min(DAYS,diff)));}
+
+function ct(d){
+  const cs=getCorr(d);let done=0,total=0;
+  cs.forEach((_,i)=>{total++;if(isCk(d,'corr',i))done++;});
+  DAILIES.filter(dl=>dl.badge==='badge-diy').forEach((_,i)=>{total++;if(isCk(d,'diy',i))done++;});
+  DAILIES.filter(dl=>dl.badge==='badge-rm').forEach((_,i)=>{total++;if(isCk(d,'rm',i))done++;});
+  return{total,done};
+}
+
+function uc(d){
+  const{total,done}=ct(d);const pct=total?Math.round(done/total*100):0;
+  const el=document.getElementById(`pct${d}`);if(el)el.textContent=`${pct}%`;
+  const cs=getCorr(d);
+  const cd=document.getElementById(`cc${d}`);
+  if(cd)cd.textContent=`${cs.filter((_,i)=>isCk(d,'corr',i)).length}/${cs.length}`;
+  const diy=DAILIES.filter(dl=>dl.badge==='badge-diy');
+  const dc=document.getElementById(`dc${d}`);
+  if(dc)dc.textContent=`${diy.filter((_,i)=>isCk(d,'diy',i)).length}/${diy.length}`;
+  const rm=DAILIES.filter(dl=>dl.badge==='badge-rm');
+  const rc=document.getElementById(`rc${d}`);
+  if(rc)rc.textContent=`${rm.filter((_,i)=>isCk(d,'rm',i)).length}/${rm.length}`;
+  const tab=document.getElementById(`dt${d}`);if(tab)tab.classList.toggle('complete',done===total&&total>0);
+}
+
+function uo(){
+  let tot=0,done=0;for(let d=1;d<=DAYS;d++){const c=ct(d);tot+=c.total;done+=c.done;}
+  const pct=tot?Math.round(done/tot*100):0;
+  document.getElementById('overall-bar').style.width=pct+'%';
+  document.getElementById('overall-pct').textContent=pct+'%';
+  document.getElementById('tasks-done').textContent=`${done} tasks done`;
+  document.getElementById('tasks-total').textContent=`${tot} total`;
+}
+
+let tt2;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt2);tt2=setTimeout(()=>t.classList.remove('show'),1600);}
+
+const bc=document.getElementById('bubbles');
+for(let i=0;i<20;i++){const b=document.createElement('div');b.className='bubble';
+  const s=4+Math.random()*14;
+  b.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;animation-duration:${9+Math.random()*16}s;animation-delay:${Math.random()*14}s;`;
+  bc.appendChild(b);}
+
+load();build();for(let d=1;d<=DAYS;d++)uc(d);uo();goToToday();
+</script>
+</body>
+</html>
