@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tank 150 — 10-Day Bridge Schedule</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0F14;
+    --surface:#141B24;
+    --surface-2:#1B2430;
+    --border:#232D3A;
+    --text:#E7ECF2;
+    --muted:#8B98A9;
+    --accent:#A78BFA;
+    --accent-dim:#4B3F73;
+    --correction:#F0ABFC;
+    --correction-dim:#4A3350;
+    --good:#4ADE80;
+    --warn:#FBBF24;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:'Inter', sans-serif; line-height:1.5;
+    padding:0 0 80px;
+  }
+  header{
+    padding:48px 24px 32px; max-width:920px; margin:0 auto;
+    border-bottom:1px solid var(--border);
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace; font-size:12px;
+    letter-spacing:0.12em; text-transform:uppercase; color:var(--accent);
+    margin-bottom:12px;
+  }
+  h1{
+    font-family:'Fraunces', serif; font-weight:600; font-size:clamp(28px,5vw,42px);
+    margin:0 0 8px; letter-spacing:-0.01em;
+  }
+  .subtitle{ color:var(--muted); font-size:15px; max-width:640px; }
+  .pulse{
+    width:100%; height:36px; margin-top:24px;
+  }
+  .pulse path{
+    fill:none; stroke:var(--accent); stroke-width:1.5;
+    stroke-dasharray:600; stroke-dashoffset:600;
+    animation:draw 3.2s ease-in-out infinite;
+    opacity:0.85;
+  }
+  @media (prefers-reduced-motion: reduce){ .pulse path{ animation:none; stroke-dashoffset:0; } }
+  @keyframes draw{
+    0%{stroke-dashoffset:600;}
+    50%{stroke-dashoffset:0;}
+    100%{stroke-dashoffset:-600;}
+  }
+  main{ max-width:920px; margin:0 auto; padding:32px 24px; }
+  .banner{
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:16px 20px; font-size:14px; color:var(--muted); margin-bottom:32px;
+  }
+  .banner strong{ color:var(--text); }
+  .day-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    margin-bottom:16px; overflow:hidden;
+  }
+  .day-card summary{
+    list-style:none; cursor:pointer; padding:18px 20px;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .day-card summary::-webkit-details-marker{ display:none; }
+  .day-head{ display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
+  .day-date{ font-family:'Fraunces', serif; font-weight:600; font-size:19px; }
+  .day-cycle{ font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--muted); }
+  .day-flags{ display:flex; gap:6px; flex-wrap:wrap; }
+  .flag{
+    font-family:'JetBrains Mono', monospace; font-size:10.5px; padding:3px 8px;
+    border-radius:20px; letter-spacing:0.04em; white-space:nowrap;
+  }
+  .flag.correction{ background:var(--correction-dim); color:var(--correction); }
+  .flag.icp{ background:var(--accent-dim); color:var(--accent); }
+  .progress{ font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--muted); }
+  .chevron{ transition:transform 0.2s ease; color:var(--muted); }
+  details[open] .chevron{ transform:rotate(90deg); }
+  .day-body{ padding:0 20px 20px; border-top:1px solid var(--border); }
+  .section-label{
+    font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--muted); margin:18px 0 8px;
+  }
+  .item{
+    display:flex; align-items:center; gap:12px; padding:9px 0;
+    border-bottom:1px solid rgba(255,255,255,0.03);
+  }
+  .item:last-child{ border-bottom:none; }
+  .item input[type=checkbox]{
+    width:18px; height:18px; accent-color:var(--accent); flex-shrink:0; cursor:pointer;
+  }
+  .item.correction input[type=checkbox]{ accent-color:var(--correction); }
+  .item-name{ flex:1; font-size:14.5px; }
+  .item-dose{
+    font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--muted); white-space:nowrap;
+  }
+  .item.correction .item-dose{ color:var(--correction); }
+  .note{
+    font-size:13px; color:var(--muted); padding:10px 0 4px; line-height:1.6;
+  }
+  .watch{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:20px; margin-top:32px;
+  }
+  .watch h2{ font-family:'Fraunces', serif; font-weight:600; font-size:18px; margin:0 0 12px; }
+  .watch ul{ margin:0; padding-left:18px; color:var(--muted); font-size:14px; line-height:1.8; }
+  .watch li strong{ color:var(--text); }
+  footer{ max-width:920px; margin:32px auto 0; padding:0 24px; color:var(--muted); font-size:12px; text-align:center; }
+  a{ color:var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Tank 150 · SPS · Bridge Schedule</div>
+  <h1>10-Day Dosing Bridge</h1>
+  <p class="subtitle">July 9 – July 18, 2026 — covers the gap between the last 2-week checklist and the incoming ICP 4 results. Correction cycle completed July 6; next window opens ~July 28.</p>
+  <svg class="pulse" viewBox="0 0 600 36" preserveAspectRatio="none">
+    <path class="pulse" d="M0,18 L60,18 L75,4 L90,32 L105,18 L180,18 L195,10 L210,26 L225,18 L300,18 L315,4 L330,32 L345,18 L420,18 L435,10 L450,26 L465,18 L540,18 L555,4 L570,32 L585,18 L600,18"/>
+  </svg>
+</header>
+
+<main>
+  <div class="banner">
+    <strong>Automated pumps (no manual dosing needed, monitor only):</strong> Alk — NaHCO3 @ 144 ml/day via DOS. Ca — CaCl2 @ 100 ml/day via DOS. Check Trident noon reading daily; recheck Salifert Ca in 5–7 days (last: 470 mg/L, above ceiling — holding rate).
+  </div>
+  <div class="banner">
+    <strong>Correction cycle:</strong> completed July 6 (Zinc was the final item, day 13). No corrections are due during this bridge window. Next cycle begins ~July 22, with the day 7–13 dosing window falling around <strong>July 28 – Aug 3</strong>.
+  </div>
+
+  <div id="days"></div>
+
+  <div class="watch">
+    <h2>Ongoing watch items this window</h2>
+    <ul>
+      <li><strong>NO3</strong> — at 2.2 mg/L (below 4 floor and dropping). Continue TDO pellets daily + reduced frozen-food rinsing. If not trending back above 4 by mid-window, consider KNO3.</li>
+      <li><strong>PO4</strong> — at 0.13–0.14 mg/L (above 0.09 ceiling). GFO 12–3pm daily should hold it. If it exceeds 0.15, extend GFO to 4 hrs.</li>
+      <li><strong>Ca</strong> — Salifert 470 mg/L (above 420–440 ceiling). Holding pump at 100 ml/day, not cutting yet — retest in 5–7 days before adjusting.</li>
+      <li><strong>Mg</strong> — 1344 true, in range. Next 477 ml BRS stock due when Trident approaches ~1283 raw.</li>
+      <li><strong>Chaeto</strong> — do not harvest until back to tennis-ball size.</li>
+      <li><strong>ICP 4</strong> — sample sent July 8; results expected ~July 18. This will recalibrate Ca consumption rate definitively.</li>
+    <li><strong>Correction cycle</strong> — completed July 6. Next window opens ~July 28 – Aug 3 (Barium, Strontium, Fluoride, Nickel correction, Zinc). Not due during this bridge.</li>
+    </ul>
+  </div>
+</main>
+
+<footer>Tank 150 · Dosing Hub · Generated July 9, 2026</footer>
+
+<script>
+const dailyItems = [
+  {name:"Iron — DIY Ferrous Gluconate (100 µg/mL)", dose:"17.5 ml"},
+  {name:"Copper — DIY CuCl₂ (37 µg/mL)", dose:"5.6 ml"},
+  {name:"Manganese — DIY Mn Gluconate (100 µg/mL)", dose:"32.5 ml"},
+  {name:"Cobalt — RM Classic", dose:"6.5 ml"},
+  {name:"Chromium — RM Classic", dose:"1.6 ml"},
+  {name:"Selenium — RM NANO", dose:"7.9 ml"},
+  {name:"Nickel — RM Classic", dose:"5.5 ml"},
+  {name:"Vanadium — drops", dose:"11 drops"},
+  {name:"Iodine — Seachem Reef Iodide", dose:"6–8 drops"},
+];
+
+const recurring = [
+  {name:"GFO reactor window", dose:"12:00–15:00"},
+  {name:"TDO pellets", dose:"daily"},
+];
+
+// Correction cycle completed July 6 (day 13). Day 1 of current cycle = June 24.
+// Next cycle's day 1 = July 22; next correction window (days 7-13) = ~July 28 - Aug 3.
+// No corrections fall inside this July 9-18 bridge window.
+const days = [
+  {date:"Tue, Jul 9",  cycle:16, corrections:[]},
+  {date:"Wed, Jul 10", cycle:17, corrections:[]},
+  {date:"Thu, Jul 11", cycle:18, corrections:[]},
+  {date:"Fri, Jul 12", cycle:19, corrections:[]},
+  {date:"Sat, Jul 13", cycle:20, corrections:[]},
+  {date:"Sun, Jul 14", cycle:21, corrections:[], note:"Suggested Salifert Ca retest day (5–7 days since last 470 mg/L reading)."},
+  {date:"Mon, Jul 15", cycle:22, corrections:[]},
+  {date:"Tue, Jul 16", cycle:23, corrections:[]},
+  {date:"Wed, Jul 17", cycle:24, corrections:[]},
+  {date:"Thu, Jul 18", cycle:25, corrections:[], icp:true, note:"ICP 4 results expected around today — recalibrate Ca consumption, alk offset, and trace targets once in hand."},
+];
+
+const container = document.getElementById('days');
+
+days.forEach((day, i) => {
+  const det = document.createElement('details');
+  det.className = 'day-card';
+  det.open = i === 0;
+
+  const totalItems = dailyItems.length + recurring.length + day.corrections.length;
+
+  det.innerHTML = `
+    <summary>
+      <div class="day-head">
+        <span class="day-date">${day.date}</span>
+        <span class="day-cycle">cycle day ${day.cycle}</span>
+        <div class="day-flags">
+          ${day.corrections.length ? '<span class="flag correction">CORRECTION</span>' : ''}
+          ${day.icp ? '<span class="flag icp">ICP DUE</span>' : ''}
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:14px;">
+        <span class="progress">0/${totalItems}</span>
+        <span class="chevron">▶</span>
+      </div>
+    </summary>
+    <div class="day-body">
+      <div class="section-label">Daily trace elements</div>
+      ${dailyItems.map(it => `
+        <label class="item">
+          <input type="checkbox">
+          <span class="item-name">${it.name}</span>
+          <span class="item-dose">${it.dose}</span>
+        </label>`).join('')}
+
+      <div class="section-label">Reactor &amp; feeding</div>
+      ${recurring.map(it => `
+        <label class="item">
+          <input type="checkbox">
+          <span class="item-name">${it.name}</span>
+          <span class="item-dose">${it.dose}</span>
+        </label>`).join('')}
+
+      ${day.corrections.length ? `
+        <div class="section-label">Correction cycle — today only</div>
+        ${day.corrections.map(it => `
+          <label class="item correction">
+            <input type="checkbox">
+            <span class="item-name">${it.name}</span>
+            <span class="item-dose">${it.dose}</span>
+          </label>`).join('')}
+      ` : ''}
+
+      ${day.note ? `<div class="note">${day.note}</div>` : ''}
+    </div>
+  `;
+
+  container.appendChild(det);
+
+  const boxes = det.querySelectorAll('input[type=checkbox]');
+  const progressEl = det.querySelector('.progress');
+  boxes.forEach(box => {
+    box.addEventListener('change', () => {
+      const checked = det.querySelectorAll('input[type=checkbox]:checked').length;
+      progressEl.textContent = `${checked}/${totalItems}`;
+    });
+  });
+});
+</script>
+
+</body>
+</html>

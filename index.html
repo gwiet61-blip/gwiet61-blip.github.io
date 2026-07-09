@@ -1,469 +1,124 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Reef Dosing Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&display=swap');
-
-  :root {
-    --ocean:    #0D3B6E;
-    --teal:     #0E7C7B;
-    --teal-lt:  #13a8a7;
-    --green:    #1A7A3A;
-    --amber:    #C47800;
-    --bg:       #070d18;
-    --bg2:      #0d1625;
-    --border:   rgba(255,255,255,0.07);
-    --text:     #e8edf5;
-    --muted:    #6b7f96;
+  :root{
+    --bg:#0B0F14;
+    --surface:#141B24;
+    --border:#232D3A;
+    --text:#E7ECF2;
+    --muted:#8B98A9;
+    --p150:#A78BFA;
+    --p150-dim:#241D3D;
+    --p90:#2DD4BF;
+    --p90-dim:#12312D;
+    --p50:#F87171;
+    --p50-dim:#3A1E1E;
   }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'DM Mono', monospace;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 24px;
-    overflow-x: hidden;
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:'Inter', sans-serif; line-height:1.5; padding:0 0 80px;
   }
-
-  /* animated ocean background */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background:
-      radial-gradient(ellipse 80% 50% at 20% 80%, rgba(14,124,123,0.12) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 40% at 80% 20%, rgba(13,59,110,0.18) 0%, transparent 60%),
-      radial-gradient(ellipse 100% 80% at 50% 100%, rgba(14,124,123,0.06) 0%, transparent 50%);
-    pointer-events: none;
-    z-index: 0;
+  header{ max-width:960px; margin:0 auto; padding:56px 24px 28px; border-bottom:1px solid var(--border); }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:12px;
   }
-
-  /* subtle bubble particles */
-  .bubbles {
-    position: fixed; inset: 0;
-    pointer-events: none; z-index: 0;
-    overflow: hidden;
+  h1{ font-family:'Fraunces', serif; font-weight:600; font-size:clamp(30px,5vw,46px); margin:0 0 10px; }
+  .subtitle{ color:var(--muted); font-size:15px; max-width:600px; }
+  main{ max-width:960px; margin:0 auto; padding:36px 24px; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:18px; }
+  .card{
+    background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    padding:24px; display:flex; flex-direction:column; gap:14px;
   }
-  .bubble {
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(14,124,123,0.15);
-    border: 1px solid rgba(14,124,123,0.25);
-    animation: rise linear infinite;
+  .card .tank-name{ font-family:'Fraunces', serif; font-weight:600; font-size:22px; }
+  .card .tank-meta{ font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--muted); }
+  .card a.primary{
+    display:inline-block; text-decoration:none; font-size:14px; font-weight:500;
+    padding:10px 14px; border-radius:8px; margin-top:4px;
   }
-  @keyframes rise {
-    0%   { transform: translateY(100vh) scale(0.8); opacity: 0; }
-    10%  { opacity: 1; }
-    90%  { opacity: 0.6; }
-    100% { transform: translateY(-10vh) scale(1.1); opacity: 0; }
+  .card.t150 a.primary{ background:var(--p150-dim); color:var(--p150); }
+  .card.t90 a.primary{ background:var(--p90-dim); color:var(--p90); }
+  .card.t50 a.primary{ background:var(--p50-dim); color:var(--p50); }
+  .card .links{ display:flex; flex-direction:column; gap:6px; margin-top:6px; }
+  .card .links a{ font-size:13px; color:var(--muted); text-decoration:none; }
+  .card .links a:hover{ color:var(--text); }
+  .section-title{
+    font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--muted); margin:40px 0 14px;
   }
-
-  .container {
-    position: relative; z-index: 1;
-    max-width: 520px; width: 100%;
-    text-align: center;
+  .resource-list{ display:flex; flex-direction:column; gap:8px; }
+  .resource-list a{
+    display:block; padding:12px 16px; background:var(--surface); border:1px solid var(--border);
+    border-radius:8px; color:var(--text); text-decoration:none; font-size:14px;
   }
-
-  /* header */
-  .coral-icon {
-    font-size: 52px;
-    display: block;
-    margin-bottom: 16px;
-    animation: sway 4s ease-in-out infinite;
-    filter: drop-shadow(0 0 20px rgba(14,124,123,0.5));
-  }
-  @keyframes sway {
-    0%, 100% { transform: rotate(-4deg) scale(1); }
-    50%       { transform: rotate(4deg) scale(1.05); }
-  }
-
-  h1 {
-    font-family: 'Fraunces', serif;
-    font-size: clamp(28px, 6vw, 42px);
-    font-weight: 600;
-    color: #fff;
-    letter-spacing: -1px;
-    line-height: 1.1;
-    margin-bottom: 8px;
-  }
-  h1 span {
-    color: var(--teal-lt);
-    font-style: italic;
-  }
-
-  .subtitle {
-    font-size: 12px;
-    color: var(--muted);
-    letter-spacing: 2px;
-    margin-bottom: 48px;
-    text-transform: uppercase;
-  }
-
-  /* divider */
-  .divider {
-    width: 60px; height: 1px;
-    background: linear-gradient(90deg, transparent, var(--teal), transparent);
-    margin: 0 auto 48px;
-  }
-
-  /* tank cards */
-  .tanks {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 32px;
-  }
-
-  .tank-card {
-    display: block;
-    text-decoration: none;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 28px 20px 24px;
-    transition: transform 0.25s ease, border-color 0.25s, box-shadow 0.25s;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-  }
-  .tank-card::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(14,124,123,0.08) 0%, transparent 60%);
-    opacity: 0;
-    transition: opacity 0.3s;
-    border-radius: inherit;
-  }
-  .tank-card:hover::before { opacity: 1; }
-  .tank-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(14,124,123,0.5);
-    box-shadow: 0 12px 40px rgba(14,124,123,0.2);
-  }
-  .tank-card:active { transform: translateY(-1px); }
-
-  .tank-icon {
-    font-size: 36px;
-    display: block;
-    margin-bottom: 12px;
-    transition: transform 0.3s;
-  }
-  .tank-card:hover .tank-icon { transform: scale(1.15); }
-
-  .tank-vol {
-    font-family: 'Fraunces', serif;
-    font-size: 32px;
-    font-weight: 600;
-    color: #fff;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .tank-unit {
-    font-size: 13px;
-    color: var(--teal-lt);
-    letter-spacing: 1px;
-  }
-  .tank-label {
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-top: 10px;
-  }
-  .tank-type {
-    display: inline-block;
-    font-size: 9px;
-    padding: 3px 8px;
-    border-radius: 20px;
-    margin-top: 8px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-  .tag-sps {
-    background: rgba(13,59,110,0.4);
-    color: #7eb3e8;
-    border: 1px solid rgba(13,59,110,0.6);
-  }
-  .tag-lps {
-    background: rgba(14,124,123,0.25);
-    color: var(--teal-lt);
-    border: 1px solid rgba(14,124,123,0.4);
-  }
-
-  /* secondary links */
-  .secondary-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 40px;
-  }
-
-  .sec-link {
-    display: block;
-    text-decoration: none;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 14px 16px;
-    transition: border-color 0.2s, background 0.2s;
-    text-align: left;
-  }
-  .sec-link:hover {
-    border-color: rgba(255,255,255,0.2);
-    background: rgba(255,255,255,0.03);
-  }
-  .sec-link-label {
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-bottom: 3px;
-  }
-  .sec-link-title {
-    font-size: 13px;
-    color: var(--text);
-    font-weight: 500;
-  }
-  .sec-link-icon { font-size: 16px; margin-bottom: 6px; display: block; }
-
-  /* footer */
-  .footer {
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.5px;
-  }
-  .footer span { color: var(--teal-lt); }
-
-  /* entrance animation */
-  .container > * {
-    opacity: 0;
-    transform: translateY(16px);
-    animation: fadeUp 0.6s ease forwards;
-  }
-  .coral-icon   { animation-delay: 0.05s; }
-  h1            { animation-delay: 0.15s; }
-  .subtitle     { animation-delay: 0.20s; }
-  .divider      { animation-delay: 0.25s; }
-  .tanks        { animation-delay: 0.35s; }
-  .secondary-grid{ animation-delay: 0.45s; }
-  .footer       { animation-delay: 0.55s; }
-
-  @keyframes fadeUp {
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @media (max-width: 380px) {
-    .tanks { grid-template-columns: 1fr; }
-    .secondary-grid { grid-template-columns: 1fr; }
-  }
-  /* Dashboard button */
-  .dash-btn {
-    display: block;
-    text-decoration: none;
-    background: linear-gradient(135deg, rgba(107,63,160,0.28), rgba(107,63,160,0.08));
-    border: 1.5px solid rgba(142,91,200,0.5);
-    border-radius: 18px;
-    padding: 20px 22px;
-    margin-bottom: 16px;
-    transition: all 0.3s;
-    transform: perspective(400px) translateZ(0);
-    box-shadow: 0 4px 24px rgba(107,63,160,0.25), inset 0 1px 0 rgba(255,255,255,0.06);
-  }
-  .dash-btn:hover {
-    background: linear-gradient(135deg, rgba(107,63,160,0.42), rgba(107,63,160,0.18));
-    border-color: rgba(142,91,200,0.75);
-    transform: perspective(400px) translateZ(8px) translateY(-3px);
-    box-shadow: 0 10px 32px rgba(107,63,160,0.4), inset 0 1px 0 rgba(255,255,255,0.12);
-  }
-  .dash-btn:active { transform: perspective(400px) translateZ(2px) translateY(-1px); }
-  .dash-inner { display: flex; align-items: center; gap: 16px; }
-  .dash-icon {
-    font-size: 32px;
-    filter: drop-shadow(0 0 14px rgba(142,91,200,0.7));
-    flex-shrink: 0;
-    transition: transform 0.3s;
-  }
-  .dash-btn:hover .dash-icon { transform: scale(1.12); }
-  .dash-text-title {
-    font-family: Fraunces, serif;
-    font-size: 17px; font-weight: 600; color: #fff;
-    text-shadow: 0 0 20px rgba(142,91,200,0.4);
-  }
-  .dash-text-sub { font-size: 11px; color: rgba(195,155,211,0.85); margin-top: 3px; letter-spacing: 0.3px; }
-  .dash-arrow {
-    margin-left: auto; font-size: 20px;
-    color: rgba(142,91,200,0.8);
-    transition: transform 0.3s;
-    flex-shrink: 0;
-  }
-  .dash-btn:hover .dash-arrow { transform: translateX(5px); }
-  /* Tank 90 Dashboard button — teal theme */
-  .dash-btn-90 {
-    display: block;
-    text-decoration: none;
-    background: linear-gradient(135deg, rgba(14,124,123,0.25), rgba(14,124,123,0.08));
-    border: 1.5px solid rgba(19,168,167,0.45);
-    border-radius: 18px;
-    padding: 20px 22px;
-    margin-bottom: 16px;
-    transition: all 0.3s;
-    transform: perspective(400px) translateZ(0);
-    box-shadow: 0 4px 20px rgba(14,124,123,0.2), inset 0 1px 0 rgba(255,255,255,0.06);
-  }
-  .dash-btn-90:hover {
-    background: linear-gradient(135deg, rgba(14,124,123,0.38), rgba(14,124,123,0.15));
-    border-color: rgba(19,168,167,0.75);
-    transform: perspective(400px) translateZ(6px) translateY(-2px);
-    box-shadow: 0 8px 28px rgba(14,124,123,0.38), inset 0 1px 0 rgba(255,255,255,0.1);
-  }
-  .dash-btn-90:active { transform: perspective(400px) translateZ(2px) translateY(-1px); }
-  .dash-btn-90 .dash-icon { filter: drop-shadow(0 0 10px rgba(19,168,167,0.65)); }
-  .dash-btn-90 .dash-text-sub { color: rgba(77,207,206,0.85); }
-  .dash-btn-90 .dash-arrow { color: rgba(19,168,167,0.8); }
+  .resource-list a span{ color:var(--muted); font-size:12px; margin-left:8px; }
+  .archive{ opacity:0.7; }
+  footer{ max-width:960px; margin:32px auto 0; padding:0 24px; color:var(--muted); font-size:12px; text-align:center; }
 </style>
 </head>
 <body>
 
-<div class="bubbles" id="bubbles"></div>
+<header>
+  <div class="eyebrow">Reef System · Dosing Hub</div>
+  <h1>Three tanks, one source of truth.</h1>
+  <p class="subtitle">Live dosing schedules, ICP trend dashboards, and DIY supplement reference for Tank 150, Tank 90, and Tank 50. Updated July 9, 2026.</p>
+</header>
 
-<div class="container">
+<main>
+  <div class="grid">
+    <div class="card t150">
+      <div class="tank-name">Tank 150</div>
+      <div class="tank-meta">150 gal · SPS · Acropora / Montipora</div>
+      <a class="primary" href="Tank150_10Day_Dosing.html">10-Day Bridge Schedule →</a>
+      <div class="links">
+        <a href="Tank150_ICP_Dashboard.html">ICP trend dashboard</a>
+      </div>
+    </div>
 
-  <span class="coral-icon">🪸</span>
+    <div class="card t90">
+      <div class="tank-name">Tank 90</div>
+      <div class="tank-meta">90 gal · LPS · Hammers / Torches / Micomussa</div>
+      <a class="primary" href="Tank90_10Day_Dosing.html">10-Day Bridge Schedule →</a>
+      <div class="links">
+        <a href="Tank90_ICP_Dashboard.html">ICP trend dashboard</a>
+      </div>
+    </div>
 
-  <h1>Reef <span>Dosing</span> Hub</h1>
-  <p class="subtitle">RM ICP-MS &nbsp;·&nbsp; Neptune Apex &nbsp;·&nbsp; Two-Tank System</p>
-  <div class="divider"></div>
-
-  <div class="tanks">
-
-    <a href="Tank150_2Week_Dosing.html" class="tank-card">
-      <span class="tank-icon">🐠</span>
-      <div class="tank-vol">150</div>
-      <div class="tank-unit">GALLONS</div>
-      <div class="tank-label">2-Week Dosing Schedule</div>
-      <span class="tank-type tag-sps">SPS · Macro</span>
-    </a>
-
-    <a href="Tank90_2Week_Dosing.html" class="tank-card">
-      <span class="tank-icon">🪸</span>
-      <div class="tank-vol">90</div>
-      <div class="tank-unit">GALLONS</div>
-      <div class="tank-label">2-Week Dosing Schedule</div>
-      <span class="tank-type tag-lps">LPS Only</span>
-    </a>
-
+    <div class="card t50">
+      <div class="tank-name">Tank 50</div>
+      <div class="tank-meta">50 gal (37 gal display) · Single coral · 20-yr Hammer</div>
+      <a class="primary" href="#" style="opacity:0.6; pointer-events:none;">Checklist pending →</a>
+      <div class="links">
+        <a>Not yet on automated pumps this cycle</a>
+      </div>
+    </div>
   </div>
 
-  <a href="Tank150_ICP_Dashboard.html" class="dash-btn">
-    <div class="dash-inner">
-      <span class="dash-icon">📈</span>
-      <div>
-        <div class="dash-text-title">Tank 150 — ICP Trend Dashboard</div>
-        <div class="dash-text-sub">3 ICP cycles · 24 elements · SPS · Macroalgae · MSR235629/634</div>
-      </div>
-      <span class="dash-arrow">→</span>
-    </div>
-  </a>
-
-  <a href="Tank90_ICP_Dashboard.html" class="dash-btn dash-btn-90">
-    <div class="dash-inner">
-      <span class="dash-icon">📈</span>
-      <div>
-        <div class="dash-text-title">Tank 90 — ICP Trend Dashboard</div>
-        <div class="dash-text-sub">2 ICP cycles · 25 elements · LPS · Hammers · MSR235789</div>
-      </div>
-      <span class="dash-arrow">→</span>
-    </div>
-  </a>
-
-  <div class="secondary-grid">
-
-    <a href="Reef_Complete_Dosing_Analysis_Final.pdf" class="sec-link">
-      <span class="sec-link-icon">📋</span>
-      <div class="sec-link-label">Tank 150</div>
-      <div class="sec-link-title">Dosing Analysis</div>
-    </a>
-
-    <a href="Tank90_Complete_Report.pdf" class="sec-link">
-      <span class="sec-link-icon">📋</span>
-      <div class="sec-link-label">Tank 90</div>
-      <div class="sec-link-title">Dosing Analysis</div>
-    </a>
-
-    <a href="Tank150_4Week_Checklist.html" class="sec-link">
-      <span class="sec-link-icon">📅</span>
-      <div class="sec-link-label">Tank 150</div>
-      <div class="sec-link-title">4-Week Checklist (previous)</div>
-    </a>
-    <a href="Tank90_4Week_Checklist.html" class="sec-link">
-      <span class="sec-link-icon">📅</span>
-      <div class="sec-link-label">Tank 90</div>
-      <div class="sec-link-title">4-Week Checklist (previous)</div>
-    </a>
-    <a href="Reef_14Day_Interactive_Checklist.html" class="sec-link">
-      <span class="sec-link-icon">📅</span>
-      <div class="sec-link-label">Tank 150</div>
-      <div class="sec-link-title">Original 14-Day Checklist</div>
-    </a>
-    <a href="Reef_Stock_Solution_List.pdf" class="sec-link">
-      <span class="sec-link-icon">🧪</span>
-      <div class="sec-link-label">Tank 150</div>
-      <div class="sec-link-title">Stock Solution List</div>
-    </a>
-
-    <a href="Reef_Moonshiners_ICP_MS_v2.xlsx" class="sec-link">
-      <span class="sec-link-icon">📊</span>
-      <div class="sec-link-label">Tank 150</div>
-      <div class="sec-link-title">ICP-MS Spreadsheet</div>
-    </a>
-
-
-    <a href="Reef_Moonshiners_ICP_MS_Tank90.xlsx" class="sec-link">
-      <span class="sec-link-icon">📊</span>
-      <div class="sec-link-label">Tank 90</div>
-      <div class="sec-link-title">ICP-MS Spreadsheet</div>
-    </a>
-
-    <a href="Reef_New_ICP_Report_MSR235401.pdf" class="sec-link">
-      <span class="sec-link-icon">🔬</span>
-      <div class="sec-link-label">Tank 150</div>
-      <div class="sec-link-title">ICP Results MSR235401</div>
-    </a>
-
+  <div class="section-title">Reference</div>
+  <div class="resource-list">
+    <a href="DIY_Supplement_Shopping_List.html">DIY Supplement Shopping List <span>HTML</span></a>
+    <a href="DIY_Supplement_Shopping_List.pdf">DIY Supplement Shopping List <span>PDF</span></a>
   </div>
 
-  <p class="footer">
-    Sample <span>MSR235401</span> · MSR235399 &nbsp;·&nbsp; 29.04.2026<br>
-    Reef Moonshiners Handbook Rev.5
-  </p>
+  <div class="section-title">Archive</div>
+  <div class="resource-list archive">
+    <a href="Tank150_2Week_Dosing.html">Tank 150 — previous 2-week checklist <span>ended Jul 8</span></a>
+    <a href="Tank90_2Week_Dosing.html">Tank 90 — previous 2-week checklist <span>ended Jul 8</span></a>
+    <a href="Tank150_4Week_Checklist.html">Tank 150 — 4-week checklist <span>archive</span></a>
+    <a href="Tank90_4Week_Checklist.html">Tank 90 — 4-week checklist (MSR235789 doses) <span>archive</span></a>
+    <a href="Reef_14Day_Interactive_Checklist.html">Original combined checklist <span>archive</span></a>
+  </div>
+</main>
 
-</div>
+<footer>Reef Dosing Hub · ICP 4 (T150) &amp; ICP 3 (T90) expected ~July 18, 2026</footer>
 
-<script>
-// Generate floating bubbles
-const container = document.getElementById('bubbles');
-const count = 18;
-for (let i = 0; i < count; i++) {
-  const b = document.createElement('div');
-  b.className = 'bubble';
-  const size = 4 + Math.random() * 12;
-  b.style.cssText = `
-    width:${size}px; height:${size}px;
-    left:${Math.random()*100}%;
-    animation-duration:${8+Math.random()*14}s;
-    animation-delay:${Math.random()*12}s;
-  `;
-  container.appendChild(b);
-}
-</script>
 </body>
 </html>

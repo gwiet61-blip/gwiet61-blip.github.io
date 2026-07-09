@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tank 90 — 10-Day Bridge Schedule</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0F14;
+    --surface:#141B24;
+    --surface-2:#1B2430;
+    --border:#232D3A;
+    --text:#E7ECF2;
+    --muted:#8B98A9;
+    --accent:#2DD4BF;
+    --accent-dim:#164743;
+    --stop:#FBBF24;
+    --stop-dim:#4A3A14;
+    --danger:#F87171;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:'Inter', sans-serif; line-height:1.5;
+    padding:0 0 80px;
+  }
+  header{
+    padding:48px 24px 32px; max-width:920px; margin:0 auto;
+    border-bottom:1px solid var(--border);
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace; font-size:12px;
+    letter-spacing:0.12em; text-transform:uppercase; color:var(--accent);
+    margin-bottom:12px;
+  }
+  h1{
+    font-family:'Fraunces', serif; font-weight:600; font-size:clamp(28px,5vw,42px);
+    margin:0 0 8px; letter-spacing:-0.01em;
+  }
+  .subtitle{ color:var(--muted); font-size:15px; max-width:640px; }
+  .pulse{ width:100%; height:36px; margin-top:24px; }
+  .pulse path{
+    fill:none; stroke:var(--accent); stroke-width:1.5;
+    stroke-dasharray:600; stroke-dashoffset:600;
+    animation:draw 3.6s ease-in-out infinite;
+    opacity:0.85;
+  }
+  @media (prefers-reduced-motion: reduce){ .pulse path{ animation:none; stroke-dashoffset:0; } }
+  @keyframes draw{
+    0%{stroke-dashoffset:600;} 50%{stroke-dashoffset:0;} 100%{stroke-dashoffset:-600;}
+  }
+  main{ max-width:920px; margin:0 auto; padding:32px 24px; }
+  .banner{
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:16px 20px; font-size:14px; color:var(--muted); margin-bottom:16px;
+  }
+  .banner strong{ color:var(--text); }
+  .banner.danger{ border-color:rgba(248,113,113,0.3); }
+  .banner.danger strong{ color:var(--danger); }
+  .day-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    margin-bottom:16px; overflow:hidden;
+  }
+  .day-card summary{
+    list-style:none; cursor:pointer; padding:18px 20px;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .day-card summary::-webkit-details-marker{ display:none; }
+  .day-head{ display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
+  .day-date{ font-family:'Fraunces', serif; font-weight:600; font-size:19px; }
+  .day-cycle{ font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--muted); }
+  .day-flags{ display:flex; gap:6px; flex-wrap:wrap; }
+  .flag{
+    font-family:'JetBrains Mono', monospace; font-size:10.5px; padding:3px 8px;
+    border-radius:20px; letter-spacing:0.04em; white-space:nowrap;
+  }
+  .flag.icp{ background:var(--accent-dim); color:var(--accent); }
+  .flag.feed{ background:var(--stop-dim); color:var(--stop); }
+  .progress{ font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--muted); }
+  .chevron{ transition:transform 0.2s ease; color:var(--muted); }
+  details[open] .chevron{ transform:rotate(90deg); }
+  .day-body{ padding:0 20px 20px; border-top:1px solid var(--border); }
+  .section-label{
+    font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--muted); margin:18px 0 8px;
+  }
+  .item{
+    display:flex; align-items:center; gap:12px; padding:9px 0;
+    border-bottom:1px solid rgba(255,255,255,0.03);
+  }
+  .item:last-child{ border-bottom:none; }
+  .item input[type=checkbox]{
+    width:18px; height:18px; accent-color:var(--accent); flex-shrink:0; cursor:pointer;
+  }
+  .item-name{ flex:1; font-size:14.5px; }
+  .item-dose{
+    font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--muted); white-space:nowrap;
+  }
+  .item.stopped{ opacity:0.55; }
+  .item.stopped .item-name::after{
+    content:" — DO NOT DOSE"; color:var(--stop); font-size:11px; letter-spacing:0.03em;
+  }
+  .item.stopped .item-dose{ text-decoration:line-through; }
+  .note{ font-size:13px; color:var(--muted); padding:10px 0 4px; line-height:1.6; }
+  .watch{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:20px; margin-top:32px;
+  }
+  .watch h2{ font-family:'Fraunces', serif; font-weight:600; font-size:18px; margin:0 0 12px; }
+  .watch ul{ margin:0; padding-left:18px; color:var(--muted); font-size:14px; line-height:1.8; }
+  .watch li strong{ color:var(--text); }
+  footer{ max-width:920px; margin:32px auto 0; padding:0 24px; color:var(--muted); font-size:12px; text-align:center; }
+  a{ color:var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Tank 90 · LPS · Bridge Schedule</div>
+  <h1>10-Day Dosing Bridge</h1>
+  <p class="subtitle">July 9 – July 18, 2026 — covers the gap between the last 2-week checklist and the incoming ICP 3 results. Hammer recession remains the primary focus this window.</p>
+  <svg class="pulse" viewBox="0 0 600 36" preserveAspectRatio="none">
+    <path class="pulse" d="M0,18 L60,18 L75,4 L90,32 L105,18 L180,18 L195,10 L210,26 L225,18 L300,18 L315,4 L330,32 L345,18 L420,18 L435,10 L450,26 L465,18 L540,18 L555,4 L570,32 L585,18 L600,18"/>
+  </svg>
+</header>
+
+<main>
+  <div class="banner danger">
+    <strong>Do not dose:</strong> Cobalt, Selenium, Vanadium, Fluoride are stopped for this entire window. Resume only after ICP 3 confirms Cobalt &lt;0.50, Selenium &lt;0.45, Vanadium &lt;2.0. Fluoride stays stopped indefinitely (accidental overdose to ~3.12 mg/L) — needs dilution via water changes, not a resume trigger.
+  </div>
+  <div class="banner">
+    <strong>Automated pumps (monitor only):</strong> Alk — ESV Component 1 @ 10 ml/day, restarted. <strong>Pause on any water-change day</strong> — Reef Crystals adds ~1 dKH; restart when Alk drops below 8.5. Ca — ESV Component 2 stays OFF until Salifert Ca is below 440 mg/L AND Hammer is actively recovering.
+  </div>
+
+  <div id="days"></div>
+
+  <div class="watch">
+    <h2>Ongoing watch items this window</h2>
+    <ul>
+      <li><strong>Hammer recession</strong> — primary focus. Stable, not worsening, not yet recovering. Recovery timeline 4–8 weeks minimum.</li>
+      <li><strong>GFO</strong> — stays paused until Hammer shows active tissue recovery. When restarted: 30–45 min every other day max, test PO4 every 3 days, max 0.05 mg/L drop per week.</li>
+      <li><strong>NO3</strong> — ~19.3 mg/L (above 4–15 ceiling), ticked up despite last WC. Fortnightly 25% water changes remain the primary export — worth confirming the WC is actually netting a reduction.</li>
+      <li><strong>Mg</strong> — 1410–1380 mg/L, now slightly above 1300–1350 target after the 1170 correction. Test again this window; don't let ESV Ca stay off long enough to crash it a third time.</li>
+      <li><strong>Fluoride</strong> — ~3.12 mg/L, needs ~2 water changes to return to target range. No dosing.</li>
+      <li><strong>ICP 3</strong> — sample sent July 8; results expected ~July 18. Will settle Cobalt/Selenium/Vanadium resume thresholds and confirm Fluoride/Lithium trend.</li>
+    </ul>
+  </div>
+</main>
+
+<footer>Tank 90 · Dosing Hub · Generated July 9, 2026</footer>
+
+<script>
+const dailyItems = [
+  {name:"Iron — DIY Ferrous Gluconate (100 µg/mL)", dose:"4.0 ml"},
+  {name:"Copper — DIY CuCl₂ (37 µg/mL)", dose:"1.6 ml"},
+  {name:"Manganese — DIY Mn Gluconate (100 µg/mL)", dose:"4.5 ml"},
+  {name:"Chromium — RM Classic", dose:"0.5 ml"},
+  {name:"Nickel — RM Classic", dose:"1.6 ml"},
+  {name:"Iodine — Seachem drops", dose:"6–8 drops"},
+];
+
+const stoppedItems = [
+  {name:"Cobalt — RM Classic", dose:"resume <0.50"},
+  {name:"Selenium — RM NANO", dose:"resume <0.45"},
+  {name:"Vanadium — drops", dose:"resume <2.0"},
+  {name:"Fluoride — RM", dose:"no more dosing"},
+];
+
+// mysis feed every 2-3 days lights-out; photo every 3-4 days
+const days = [
+  {date:"Thu, Jul 9",  feed:true,  photo:true},
+  {date:"Fri, Jul 10", feed:false, photo:false},
+  {date:"Sat, Jul 11", feed:true,  photo:false},
+  {date:"Sun, Jul 12", feed:false, photo:true},
+  {date:"Mon, Jul 13", feed:true,  photo:false},
+  {date:"Tue, Jul 14", feed:false, photo:false},
+  {date:"Wed, Jul 15", feed:true,  photo:true},
+  {date:"Thu, Jul 16", feed:false, photo:false},
+  {date:"Fri, Jul 17", feed:true,  photo:false},
+  {date:"Sat, Jul 18", feed:false, photo:true, icp:true, note:"ICP 3 results expected around today — will confirm resume thresholds for Cobalt, Selenium, Vanadium, and Fluoride/Lithium trend."},
+];
+
+const container = document.getElementById('days');
+
+days.forEach((day, i) => {
+  const det = document.createElement('details');
+  det.className = 'day-card';
+  det.open = i === 0;
+
+  const hammerTasks = (day.feed ? 1 : 0) + (day.photo ? 1 : 0);
+  const totalItems = dailyItems.length + hammerTasks;
+
+  det.innerHTML = `
+    <summary>
+      <div class="day-head">
+        <span class="day-date">${day.date}</span>
+        <div class="day-flags">
+          ${day.feed ? '<span class="flag feed">MYSIS FEED</span>' : ''}
+          ${day.photo ? '<span class="flag feed">PHOTO</span>' : ''}
+          ${day.icp ? '<span class="flag icp">ICP DUE</span>' : ''}
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:14px;">
+        <span class="progress">0/${totalItems}</span>
+        <span class="chevron">▶</span>
+      </div>
+    </summary>
+    <div class="day-body">
+      <div class="section-label">Daily trace elements</div>
+      ${dailyItems.map(it => `
+        <label class="item">
+          <input type="checkbox">
+          <span class="item-name">${it.name}</span>
+          <span class="item-dose">${it.dose}</span>
+        </label>`).join('')}
+
+      <div class="section-label">Stopped — awaiting ICP 3</div>
+      ${stoppedItems.map(it => `
+        <div class="item stopped">
+          <input type="checkbox" disabled>
+          <span class="item-name">${it.name}</span>
+          <span class="item-dose">${it.dose}</span>
+        </div>`).join('')}
+
+      ${hammerTasks ? `
+        <div class="section-label">Hammer care</div>
+        ${day.feed ? `
+          <label class="item">
+            <input type="checkbox">
+            <span class="item-name">Target-feed mysis at lights-out</span>
+            <span class="item-dose">Hammer</span>
+          </label>` : ''}
+        ${day.photo ? `
+          <label class="item">
+            <input type="checkbox">
+            <span class="item-name">Progress photo for trend tracking</span>
+            <span class="item-dose">Hammer</span>
+          </label>` : ''}
+      ` : ''}
+
+      ${day.note ? `<div class="note">${day.note}</div>` : ''}
+    </div>
+  `;
+
+  container.appendChild(det);
+
+  const boxes = det.querySelectorAll('input[type=checkbox]:not(:disabled)');
+  const progressEl = det.querySelector('.progress');
+  boxes.forEach(box => {
+    box.addEventListener('change', () => {
+      const checked = det.querySelectorAll('input[type=checkbox]:checked').length;
+      progressEl.textContent = `${checked}/${totalItems}`;
+    });
+  });
+});
+</script>
+
+</body>
+</html>
