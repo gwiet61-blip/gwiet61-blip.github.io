@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tank 90 — 10-Day Bridge Schedule</title>
+<title>S2 600 — 10-Day Bridge Schedule</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -26,6 +26,14 @@
     font-family:'Inter', sans-serif; line-height:1.5;
     padding:0 0 80px;
   }
+  .hub-link{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:0.04em;
+    color:var(--muted); text-decoration:none; margin-bottom:20px;
+  }
+  .hub-link:hover{ color:var(--accent); }
+  .hub-link .arrow{ transition:transform 0.15s ease; }
+  .hub-link:hover .arrow{ transform:translateX(-3px); }
   header{
     padding:48px 24px 32px; max-width:920px; margin:0 auto;
     border-bottom:1px solid var(--border);
@@ -118,9 +126,11 @@
 <body>
 
 <header>
-  <div class="eyebrow">Tank 90 · LPS · Bridge Schedule</div>
+  <a class="hub-link" href="index.html"><span class="arrow">←</span> Back to hub</a>
+  <div class="eyebrow">S2 600 · LPS · Bridge Schedule</div>
   <h1>10-Day Dosing Bridge</h1>
   <p class="subtitle">July 9 – July 18, 2026 — covers the gap between the last 2-week checklist and the incoming ICP 3 results. Hammer recession remains the primary focus this window.</p>
+  <p class="subtitle" style="margin-top:8px; color:var(--stop);">Volume correction: system is 70 gal total (not 90) — current water volume in tank + sump is ~65 gal. All dose-per-gallon math should reference 65–70 gal.</p>
   <svg class="pulse" viewBox="0 0 600 36" preserveAspectRatio="none">
     <path class="pulse" d="M0,18 L60,18 L75,4 L90,32 L105,18 L180,18 L195,10 L210,26 L225,18 L300,18 L315,4 L330,32 L345,18 L420,18 L435,10 L450,26 L465,18 L540,18 L555,4 L570,32 L585,18 L600,18"/>
   </svg>
@@ -149,7 +159,7 @@
   </div>
 </main>
 
-<footer>Tank 90 · Dosing Hub · Generated July 9, 2026</footer>
+<footer>S2 600 · Dosing Hub · Generated July 9, 2026</footer>
 
 <script>
 const dailyItems = [
