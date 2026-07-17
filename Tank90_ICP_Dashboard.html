@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tank 90 — ICP Trend Dashboard</title>
+<title>S2 600 — ICP Trend Dashboard</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600&display=swap');
 :root{
@@ -114,14 +114,16 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
       <div style="display:flex;align-items:center">
         <h1>🪸 ICP Trend Dashboard</h1>
-        <span class="tbadge">TANK 90 · 90 GAL</span>
+        <span class="tbadge">S2 600 · 70 GAL</span>
       </div>
       <a href="index.html" class="home-btn">← Hub</a>
     </div>
     <div class="dates">
       <span class="dpill">ICP 1 — 29 Apr 2026</span>
       <span class="dsep">→</span>
-      <span class="dpill latest">ICP 2 — 12 Jun 2026 ← Latest</span>
+      <span class="dpill">ICP 2 — 12 Jun 2026</span>
+      <span class="dsep">→</span>
+      <span class="dpill latest">ICP 3 — 8 Jul 2026 ← Latest</span>
     </div>
   </div>
 </div>
@@ -129,18 +131,18 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 <div class="alert-banner">
   <div class="alert-box red">
     <div class="alert-icon">🔴</div>
-    <div><div class="alert-title">NUTRIENTS CRITICAL — ACTION REQUIRED</div>
-    <div class="alert-text">PO4 jumped from 0.087 → 0.537 mg/L (6× above ceiling) · NO3 jumped from 4.6 → 26.78 mg/L (nearly 2× above ceiling). Start GFO reactor immediately. Run skimmer 24/7. Fortnightly 25% water changes essential.</div></div>
+    <div><div class="alert-title">NUTRIENTS STILL CRITICAL — IMPROVING</div>
+    <div class="alert-text">PO4: 0.537 → 0.331 mg/L (still ~4× above ceiling, but falling). NO3: 26.78 → 23.02 mg/L (still above ceiling, still falling). GFO stays paused until Hammer shows active tissue recovery — do not restart yet. Continue fortnightly 25% water changes.</div></div>
   </div>
   <div class="alert-box purple">
     <div class="alert-icon">🔬</div>
-    <div><div class="alert-title">LITHIUM — 807 µg/L (3.7× ABOVE TARGET)</div>
-    <div class="alert-text">Not from RM dosing products. Likely source: ESV B-Ionic accumulation in low water-change system, or aging RO membrane. Test RO/DI output for lithium. Do NOT dose any lithium products. Regular water changes will dilute over time.</div></div>
+    <div><div class="alert-title">LITHIUM — 677 µg/L (declining from 807)</div>
+    <div class="alert-text">Confirmed ESV B-Ionic source (Randy Holmes-Farley, R2F2F) — not harmful. Declining as expected via water-change dilution. No action needed beyond continued water changes.</div></div>
   </div>
   <div class="alert-box amber">
     <div class="alert-icon">⚠️</div>
-    <div><div class="alert-title">OVERCORRECTED — STOP DOSING: Cobalt · Selenium · Vanadium · Strontium · Fluoride</div>
-    <div class="alert-text">Cobalt 0.83 (>0.60) · Selenium 0.732 (>0.55) · Vanadium 3.45 (>2.0) · Strontium 20.7 (>12) · Fluoride 2.77 (>2.0). All will fall naturally without dosing. Resume only when back in target range.</div></div>
+    <div><div class="alert-title">RESUME DOSING — Cobalt · Selenium now below target (overshot the correction); Vanadium back in range · STOP — Iodine now over 2× ceiling</div>
+    <div class="alert-text">Cobalt 0.23 (target 0.40–0.60, now BELOW range — resume dosing). Selenium 0.31 (target 0.35–0.55, now BELOW range — resume dosing). Vanadium 1.23 (target 1.0–2.0, back IN range — resume at maintenance rate). Strontium 16.3 (still >12 — no dosing). Fluoride 2.04 (just above 2.0 — no dosing, recheck soon, very close to threshold). Iodine 227.6 µg/L (target 75–95 — over 2× ceiling, stop dosing until back in range). Trace dosing is on hold for travel (Jul 18–26) regardless — resume Cobalt/Selenium/Vanadium on return; hold Iodine until retested.</div></div>
   </div>
 </div>
 
@@ -159,37 +161,38 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 <div id="root"></div>
 
 <script>
-const DATES=['29 Apr','12 Jun'];
+const DATES=['29 Apr','12 Jun','8 Jul'];
 const D={
   // MAJOR
-  Calcium:    {v:[459,440],    u:'mg/L', lo:420, hi:440, cat:'major', doses:null,       du:null},
-  Alkalinity: {v:[8.0,8.8],   u:'dKH',  lo:7.8, hi:8.5, cat:'major', doses:[10,10],    du:'ml/day ESV Comp 1'},
-  Magnesium:  {v:[1339,1336], u:'mg/L', lo:1300,hi:1400, cat:'major', doses:null,       du:null},
-  Potassium:  {v:[403,421],   u:'mg/L', lo:400, hi:420,  cat:'major', doses:null,       du:null},
-  Bromide:    {v:[86,100],    u:'mg/L', lo:80,  hi:90,   cat:'major', doses:null,       du:null},
-  Boron:      {v:[6.0,6.1],   u:'mg/L', lo:5.9, hi:6.5,  cat:'major', doses:null,       du:null},
-  Rubidium:   {v:[295,353.6], u:'µg/L', lo:250, hi:310,  cat:'major', doses:null,       du:null},
-  Molybdenum: {v:[14.5,17.9], u:'µg/L', lo:13,  hi:17,   cat:'major', doses:null,       du:null},
-  Lithium:    {v:[null,807],  u:'µg/L', lo:180, hi:220,  cat:'major', doses:null,       du:null},
+  Calcium:    {v:[459,440,471],    u:'mg/L', lo:420, hi:440, cat:'major', doses:null,       du:null},
+  Alkalinity: {v:[8.0,8.8,8.22],   u:'dKH',  lo:7.8, hi:8.5, cat:'major', doses:[10,10,10],    du:'ml/day ESV Comp 1'},
+  Salinity:   {v:[null,null,37.1], u:'PSU',  lo:34,  hi:35,  cat:'major', doses:null, du:null},
+  Magnesium:  {v:[1339,1336,1428], u:'mg/L', lo:1300,hi:1400, cat:'major', doses:null,       du:null},
+  Potassium:  {v:[403,421,393],   u:'mg/L', lo:400, hi:420,  cat:'major', doses:null,       du:null},
+  Bromide:    {v:[86,100,103],    u:'mg/L', lo:80,  hi:90,   cat:'major', doses:null,       du:null},
+  Boron:      {v:[6.0,6.1,5.8],   u:'mg/L', lo:5.9, hi:6.5,  cat:'major', doses:null,       du:null},
+  Rubidium:   {v:[295,353.6,217.2], u:'µg/L', lo:250, hi:310,  cat:'major', doses:null,       du:null},
+  Molybdenum: {v:[14.5,17.9,10.1], u:'µg/L', lo:13,  hi:17,   cat:'major', doses:null,       du:null},
+  Lithium:    {v:[null,807,677],  u:'µg/L', lo:180, hi:220,  cat:'major', doses:null,       du:null},
   // CORRECTION
-  Strontium:  {v:[4.9,20.7],  u:'mg/L', lo:9,   hi:12,   cat:'corr',  doses:null,       du:null},
-  Fluoride:   {v:[0.65,2.77], u:'mg/L', lo:1.0, hi:2.0,  cat:'corr',  doses:null,       du:null},
-  Barium:     {v:[5.12,17.43],u:'µg/L', lo:10,  hi:20,   cat:'corr',  doses:null,       du:null},
-  Zinc:       {v:[0.13,0.27], u:'µg/L', lo:4.0, hi:6.0,  cat:'corr',  doses:null,       du:null},
-  Caesium:    {v:[1.43,1.87], u:'µg/L', lo:4,   hi:6,    cat:'corr',  doses:null,       du:null},
+  Strontium:  {v:[4.9,20.7,16.3],  u:'mg/L', lo:9,   hi:12,   cat:'corr',  doses:null,       du:null},
+  Fluoride:   {v:[0.65,2.77,2.04], u:'mg/L', lo:1.0, hi:2.0,  cat:'corr',  doses:null,       du:null},
+  Barium:     {v:[5.12,17.43,20.87],u:'µg/L', lo:10,  hi:20,   cat:'corr',  doses:null,       du:null},
+  Zinc:       {v:[0.13,0.27,10.26], u:'µg/L', lo:4.0, hi:6.0,  cat:'corr',  doses:null,       du:null},
+  Caesium:    {v:[1.43,1.87,1.57], u:'µg/L', lo:4,   hi:6,    cat:'corr',  doses:null,       du:null},
   // DAILY
-  Iron:       {v:[0.05,0.08], u:'µg/L', lo:0.70,hi:1.00, cat:'daily', doses:[2.0,4.0],  du:'ml/day Classic'},
-  Copper:     {v:[0.08,0.19], u:'µg/L', lo:0.40,hi:0.60, cat:'daily', doses:[7.0,7.5],  du:'ml/day NANO'},
-  Cobalt:     {v:[0.10,0.83], u:'µg/L', lo:0.40,hi:0.60, cat:'daily', doses:[1.1,0],    du:'ml/day Classic'},
-  Manganese:  {v:[0.11,0.12], u:'µg/L', lo:0.40,hi:0.60, cat:'daily', doses:[2.0,4.5],  du:'ml/day Classic'},
-  Chromium:   {v:[0.37,0.32], u:'µg/L', lo:0.35,hi:0.55, cat:'daily', doses:[0.4,0.5],  du:'ml/day Classic'},
-  Selenium:   {v:[0.272,0.732],u:'µg/L',lo:0.35,hi:0.55, cat:'daily', doses:[2.0,0],    du:'ml/day NANO'},
-  Vanadium:   {v:[0.33,3.45], u:'µg/L', lo:1.0, hi:2.0,  cat:'daily', doses:[3,0],      du:'drops/day'},
-  Nickel:     {v:[1.52,null], u:'µg/L', lo:2.5, hi:2.5,  cat:'daily', doses:[1.6,1.6],  du:'ml/day Classic'},
-  Iodine:     {v:[50.8,null], u:'µg/L', lo:75,  hi:95,   cat:'daily', doses:[4,6],      du:'drops/day'},
+  Iron:       {v:[0.05,0.08,0.15], u:'µg/L', lo:0.70,hi:1.00, cat:'daily', doses:[2.0,4.0,4.0],  du:'ml/day Classic'},
+  Copper:     {v:[0.08,0.19,0.45], u:'µg/L', lo:0.40,hi:0.60, cat:'daily', doses:[7.0,7.5,1.6],  du:'ml/day (switched RM NANO→DIY CuCl₂ — not directly comparable in ml)'},
+  Cobalt:     {v:[0.10,0.83,0.23], u:'µg/L', lo:0.40,hi:0.60, cat:'daily', doses:[1.1,0,0],    du:'ml/day Classic'},
+  Manganese:  {v:[0.11,0.12,0.18], u:'µg/L', lo:0.40,hi:0.60, cat:'daily', doses:[2.0,4.5,4.5],  du:'ml/day Classic'},
+  Chromium:   {v:[0.37,0.32,0.31], u:'µg/L', lo:0.35,hi:0.55, cat:'daily', doses:[0.4,0.5,0.5],  du:'ml/day Classic'},
+  Selenium:   {v:[0.272,0.732,0.31],u:'µg/L',lo:0.35,hi:0.55, cat:'daily', doses:[2.0,0,0],    du:'ml/day NANO'},
+  Vanadium:   {v:[0.33,3.45,1.23], u:'µg/L', lo:1.0, hi:2.0,  cat:'daily', doses:[3,0,0],      du:'drops/day'},
+  Nickel:     {v:[1.52,null,3.27], u:'µg/L', lo:2.5, hi:2.5,  cat:'daily', doses:[1.6,1.6,1.6],  du:'ml/day Classic'},
+  Iodine:     {v:[50.8,null,227.6], u:'µg/L', lo:75,  hi:95,   cat:'daily', doses:[4,6,7],      du:'drops/day'},
   // NUTRIENTS
-  Phosphate:  {v:[0.087,0.537],u:'mg/L',lo:0.02,hi:0.09, cat:'nutrient',doses:null,     du:null},
-  Nitrate:    {v:[4.6,26.78], u:'mg/L', lo:4,   hi:15,   cat:'nutrient',doses:null,     du:null},
+  Phosphate:  {v:[0.087,0.537,0.331],u:'mg/L',lo:0.02,hi:0.09, cat:'nutrient',doses:null,     du:null},
+  Nitrate:    {v:[4.6,26.78,23.02], u:'mg/L', lo:4,   hi:15,   cat:'nutrient',doses:null,     du:null},
 };
 
 function stat(e){
@@ -295,10 +298,10 @@ function buildSummary(){
     <div class="sc"><div class="sl">BELOW TARGET</div><div class="sv c-lo">${ct.lo}</div><div class="ss">need action</div></div>
     <div class="sc"><div class="sl">ABOVE TARGET</div><div class="sv c-hi">${ct.hi}</div><div class="ss">stop dosing</div></div>
     <div class="sc"><div class="sl">NO DATA</div><div class="sv c-na">${ct.na}</div><div class="ss">manual test needed</div></div>
-    <div class="sc"><div class="sl">ICP CYCLES</div><div class="sv c-tl">2</div><div class="ss">Apr → Jun 2026</div></div>
-    <div class="sc"><div class="sl">DAYS TRACKED</div><div class="sv c-na">44</div><div class="ss">29 Apr to 12 Jun</div></div>
-    <div class="sc"><div class="sl">PO4</div><div class="sv c-hi">0.537</div><div class="ss">mg/L — critical</div></div>
-    <div class="sc"><div class="sl">LITHIUM</div><div class="sv c-pu">807</div><div class="ss">µg/L — investigate</div></div>`;
+    <div class="sc"><div class="sl">ICP CYCLES</div><div class="sv c-tl">3</div><div class="ss">Apr → Jun → Jul 2026</div></div>
+    <div class="sc"><div class="sl">DAYS TRACKED</div><div class="sv c-na">70</div><div class="ss">29 Apr to 8 Jul</div></div>
+    <div class="sc"><div class="sl">PO4</div><div class="sv c-hi">0.331</div><div class="ss">mg/L — still critical, improving</div></div>
+    <div class="sc"><div class="sl">LITHIUM</div><div class="sv c-pu">677</div><div class="ss">µg/L — declining, benign source</div></div>`;
 }
 
 const CAT_META={

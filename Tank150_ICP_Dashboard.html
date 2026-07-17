@@ -123,7 +123,9 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
       <span class="dsep">→</span>
       <span class="dpill">ICP 2 — 29 Apr 2026</span>
       <span class="dsep">→</span>
-      <span class="dpill latest">ICP 3 — 27 May 2026 ← Latest</span>
+      <span class="dpill">ICP 3 — 27 May 2026</span>
+      <span class="dsep">→</span>
+      <span class="dpill latest">ICP 4 — 8 Jul 2026 ← Latest</span>
     </div>
   </div>
 </div>
@@ -143,36 +145,36 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 <div id="root"></div>
 
 <script>
-const DATES=['27 Feb','29 Apr','27 May'];
+const DATES=['27 Feb','29 Apr','27 May','8 Jul'];
 const D={
   // MAJOR
-  Calcium:    {v:[490,459,449],    u:'mg/L', lo:420, hi:440, cat:'major', doses:null, du:null},
-  Alkalinity: {v:[null,6.8,8.0],  u:'dKH',  lo:7.8, hi:8.5, cat:'major', doses:[null,139,139], du:'ml/day pump'},
-  Salinity:   {v:[null,38.8,36.0],u:'PSU',  lo:34,  hi:35,  cat:'major', doses:null, du:null},
-  Magnesium:  {v:[1316,1322,1352],u:'mg/L', lo:1300,hi:1400,cat:'major', doses:null, du:null},
-  Potassium:  {v:[390,398,402],   u:'mg/L', lo:400, hi:420, cat:'major', doses:null, du:null},
-  Bromide:    {v:[82,87,86],      u:'mg/L', lo:80,  hi:90,  cat:'major', doses:null, du:null},
-  Rubidium:   {v:[315,295.6,277.2],u:'µg/L',lo:250,hi:310, cat:'major', doses:null, du:null},
-  Molybdenum: {v:[13.0,13.8,14.8],u:'µg/L',lo:13,  hi:17,  cat:'major', doses:null, du:null},
+  Calcium:    {v:[490,459,449,454],    u:'mg/L', lo:420, hi:440, cat:'major', doses:null, du:null},
+  Alkalinity: {v:[null,6.8,8.0,8.26],  u:'dKH',  lo:7.8, hi:8.5, cat:'major', doses:[null,139,139,144], du:'ml/day pump'},
+  Salinity:   {v:[null,38.8,36.0,37.8],u:'PSU',  lo:34,  hi:35,  cat:'major', doses:null, du:null},
+  Magnesium:  {v:[1316,1322,1352,1357],u:'mg/L', lo:1300,hi:1400,cat:'major', doses:null, du:null},
+  Potassium:  {v:[390,398,402,391],   u:'mg/L', lo:400, hi:420, cat:'major', doses:null, du:null},
+  Bromide:    {v:[82,87,86,82],      u:'mg/L', lo:80,  hi:90,  cat:'major', doses:null, du:null},
+  Rubidium:   {v:[315,295.6,277.2,269.4],u:'µg/L',lo:250,hi:310, cat:'major', doses:null, du:null},
+  Molybdenum: {v:[13.0,13.8,14.8,12.4],u:'µg/L',lo:13,  hi:17,  cat:'major', doses:null, du:null},
   // CORRECTION
-  Strontium:  {v:[6.8,5.3,6.5],  u:'mg/L', lo:9,   hi:12,  cat:'corr',  doses:null, du:null},
-  Fluoride:   {v:[0.95,0.66,0.85],u:'mg/L',lo:1.0, hi:2.0, cat:'corr',  doses:null, du:null},
-  Barium:     {v:[8.44,5.68,4.13],u:'µg/L',lo:10,  hi:20,  cat:'corr',  doses:null, du:null},
-  Zinc:       {v:[0.76,0.19,0.38],u:'µg/L',lo:4.0, hi:6.0, cat:'corr',  doses:null, du:null},
-  Caesium:    {v:[1.36,1.34,1.19],u:'µg/L',lo:4,   hi:6,   cat:'corr',  doses:null, du:null},
+  Strontium:  {v:[6.8,5.3,6.5,7.2],  u:'mg/L', lo:9,   hi:12,  cat:'corr',  doses:null, du:null},
+  Fluoride:   {v:[0.95,0.66,0.85,1.05],u:'mg/L',lo:1.0, hi:2.0, cat:'corr',  doses:null, du:null},
+  Barium:     {v:[8.44,5.68,4.13,8.56],u:'µg/L',lo:10,  hi:20,  cat:'corr',  doses:null, du:null},
+  Zinc:       {v:[0.76,0.19,0.38,0.25],u:'µg/L',lo:4.0, hi:6.0, cat:'corr',  doses:null, du:null},
+  Caesium:    {v:[1.36,1.34,1.19,1.2],u:'µg/L',lo:4,   hi:6,   cat:'corr',  doses:null, du:null},
   // DAILY DOSED
-  Iron:       {v:[0.03,0.05,0.08],u:'µg/L',lo:0.70,hi:1.00,cat:'daily', doses:[4.5,5.0,17.5], du:'ml/day Classic'},
-  Copper:     {v:[0.38,0.07,0.125],u:'µg/L',lo:0.40,hi:0.60,cat:'daily',doses:[16.5,18.0,24.0],du:'ml/day NANO'},
-  Cobalt:     {v:[0.36,0.11,0.24],u:'µg/L',lo:0.40,hi:0.60,cat:'daily', doses:[6.0,6.4,6.5],  du:'ml/day Classic'},
-  Manganese:  {v:[null,0.11,0.135],u:'µg/L',lo:0.40,hi:0.60,cat:'daily',doses:[26.5,32.5,32.5],du:'ml/day Classic'},
-  Chromium:   {v:[0.46,0.37,0.74],u:'µg/L',lo:0.35,hi:0.55,cat:'daily', doses:[1.0,1.6,1.7],  du:'ml/day Classic'},
-  Selenium:   {v:[0.327,0.278,0.339],u:'µg/L',lo:0.35,hi:0.55,cat:'daily',doses:[0.3,0.5,7.9],du:'ml/day NANO'},
-  Vanadium:   {v:[0.56,0.54,0.695],u:'µg/L',lo:1.0,hi:2.0,cat:'daily',  doses:[3,5,9],        du:'drops/day'},
-  Nickel:     {v:[2.12,1.56,2.82],u:'µg/L', lo:2.5, hi:2.5,cat:'daily',  doses:[5.0,5.5,5.5], du:'ml/day Classic'},
-  Iodine:     {v:[92.5,44.5,58.3],u:'µg/L', lo:75,  hi:95, cat:'daily',  doses:[0,4,4],        du:'drops/day'},
+  Iron:       {v:[0.03,0.05,0.08,0.03],u:'µg/L',lo:0.70,hi:1.00,cat:'daily', doses:[4.5,5.0,17.5,17.5], du:'ml/day Classic'},
+  Copper:     {v:[0.38,0.07,0.125,0.24],u:'µg/L',lo:0.40,hi:0.60,cat:'daily',doses:[16.5,18.0,24.0,5.6],du:'ml/day (switched RM NANO→DIY CuCl₂ — not directly comparable in ml)'},
+  Cobalt:     {v:[0.36,0.11,0.24,0.21],u:'µg/L',lo:0.40,hi:0.60,cat:'daily', doses:[6.0,6.4,6.5,6.5],  du:'ml/day Classic'},
+  Manganese:  {v:[null,0.11,0.135,0.14],u:'µg/L',lo:0.40,hi:0.60,cat:'daily',doses:[26.5,32.5,32.5,32.5],du:'ml/day Classic'},
+  Chromium:   {v:[0.46,0.37,0.74,1.23],u:'µg/L',lo:0.35,hi:0.55,cat:'daily', doses:[1.0,1.6,1.7,1.6],  du:'ml/day Classic'},
+  Selenium:   {v:[0.327,0.278,0.339,0.369],u:'µg/L',lo:0.35,hi:0.55,cat:'daily',doses:[0.3,0.5,7.9,7.9],du:'ml/day NANO'},
+  Vanadium:   {v:[0.56,0.54,0.695,0.76],u:'µg/L',lo:1.0,hi:2.0,cat:'daily',  doses:[3,5,9,11],        du:'drops/day'},
+  Nickel:     {v:[2.12,1.56,2.82,3.09],u:'µg/L', lo:2.5, hi:2.5,cat:'daily',  doses:[5.0,5.5,5.5,5.5], du:'ml/day Classic'},
+  Iodine:     {v:[92.5,44.5,58.3,98.6],u:'µg/L', lo:75,  hi:95, cat:'daily',  doses:[0,4,4,7],        du:'drops/day'},
   // PUMP
-  'Alk Pump': {v:[null,139,139],  u:'ml/day',lo:130,hi:145, cat:'pump',  doses:null, du:null},
-  'Ca Pump':  {v:[null,126,126],  u:'ml/day',lo:120,hi:135, cat:'pump',  doses:null, du:null},
+  'Alk Pump': {v:[null,139,139,144],  u:'ml/day',lo:130,hi:145, cat:'pump',  doses:null, du:null},
+  'Ca Pump':  {v:[null,126,126,90],  u:'ml/day',lo:120,hi:135, cat:'pump',  doses:null, du:null},
 };
 
 function stat(e){
@@ -207,7 +209,7 @@ function mkSVG(e){
   const yMin=Math.max(0,Math.min(...allY)-yPad);
   const yMax=Math.max(...allY)+yPad;
   const yr=yMax-yMin;
-  const xp=i=>PL+(i/2)*pw;
+  const xp=i=>PL+(i/(DATES.length-1))*pw;
   const yp=v=>PT+ph-((v-yMin)/yr*ph);
   const st=stat(e);
   const lc=st==='ok'?'#27ae60':st==='lo'?'#e74c3c':st==='hi'?'#f0a500':'#5a7090';
@@ -302,8 +304,8 @@ function buildSummary(){
     <div class="sc"><div class="sl">BELOW TARGET</div><div class="sv c-lo">${ct.lo}</div><div class="ss">need action</div></div>
     <div class="sc"><div class="sl">ABOVE TARGET</div><div class="sv c-hi">${ct.hi}</div><div class="ss">reduce or settle</div></div>
     <div class="sc"><div class="sl">IMPROVING</div><div class="sv c-tl">${improved}</div><div class="ss">trending right direction</div></div>
-    <div class="sc"><div class="sl">ICP CYCLES</div><div class="sv c-tl">3</div><div class="ss">Feb → Apr → May 2026</div></div>
-    <div class="sc"><div class="sl">DAYS TRACKED</div><div class="sv c-na">89</div><div class="ss">27 Feb to 27 May</div></div>
+    <div class="sc"><div class="sl">ICP CYCLES</div><div class="sv c-tl">4</div><div class="ss">Feb → Apr → May → Jul 2026</div></div>
+    <div class="sc"><div class="sl">DAYS TRACKED</div><div class="sv c-na">131</div><div class="ss">27 Feb to 8 Jul</div></div>
   `;
 }
 

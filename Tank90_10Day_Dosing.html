@@ -138,10 +138,13 @@
 
 <main>
   <div class="banner danger">
-    <strong>Do not dose:</strong> Cobalt, Selenium, Vanadium, Fluoride are stopped for this entire window. Resume only after ICP 3 confirms Cobalt &lt;0.50, Selenium &lt;0.45, Vanadium &lt;2.0. Fluoride stays stopped indefinitely (accidental overdose to ~3.12 mg/L) — needs dilution via water changes, not a resume trigger.
+    <strong>ICP 3 confirmed (received Jul 16):</strong> Cobalt (0.23, now below 0.40–0.60 target — needs resuming, not just cleared), Selenium (0.31, below 0.35–0.55 target — needs resuming), Vanadium (1.23, back in 1.0–2.0 range — resume at maintenance) all deferred until after travel. Fluoride (2.04, still just above 2.0) stays stopped indefinitely — needs dilution via water changes. <strong>Iodine (227.6 µg/L, over 2× the 75–95 ceiling) is a new stop</strong> — do not dose until retested.
   </div>
   <div class="banner">
-    <strong>Automated pumps (monitor only):</strong> Alk — ESV Component 1 @ 10 ml/day, restarted. <strong>Pause on any water-change day</strong> — Reef Crystals adds ~1 dKH; restart when Alk drops below 8.5. Ca — ESV Component 2 stays OFF until Salifert Ca is below 440 mg/L AND Hammer is actively recovering.
+    <strong>Automated pumps (monitor only):</strong> Alk — ESV Component 1 restarted at 10 ml/day Jul 16 (had fallen to 7.3 dKH, below the 7.8 floor). Ca — ESV Component 2 stays OFF; Salifert 450 mg/L (Jul 16), still above 440 ceiling but declining ~5 mg/L/day — retest around Jul 18 to check for crossover.
+  </div>
+  <div class="banner" style="border-color:rgba(240,171,252,0.35);">
+    <strong style="color:#F0ABFC;">Travel hold:</strong> all daily trace elements paused <strong>July 18 – July 26</strong>. ESV Alk and (once restarted) Ca pumps continue running automated — no action needed on those. Resume trace dosing <strong>Monday, July 27</strong>, including Cobalt, Selenium, Vanadium, and — pending a clean retest — Iodine.
   </div>
 
   <div id="days"></div>
@@ -153,13 +156,13 @@
       <li><strong>GFO</strong> — stays paused until Hammer shows active tissue recovery. When restarted: 30–45 min every other day max, test PO4 every 3 days, max 0.05 mg/L drop per week.</li>
       <li><strong>NO3</strong> — ~19.3 mg/L (above 4–15 ceiling), ticked up despite last WC. Fortnightly 25% water changes remain the primary export — worth confirming the WC is actually netting a reduction.</li>
       <li><strong>Mg</strong> — 1410–1380 mg/L, now slightly above 1300–1350 target after the 1170 correction. Test again this window; don't let ESV Ca stay off long enough to crash it a third time.</li>
-      <li><strong>Fluoride</strong> — ~3.12 mg/L, needs ~2 water changes to return to target range. No dosing.</li>
-      <li><strong>ICP 3</strong> — sample sent July 8; results expected ~July 18. Will settle Cobalt/Selenium/Vanadium resume thresholds and confirm Fluoride/Lithium trend.</li>
+      <li><strong>Fluoride</strong> — 2.04 mg/L (ICP, Jul 8 sample), still just above 2.0 ceiling. No dosing.</li>
+      <li><strong>ICP 3 — received Jul 16.</strong> Cobalt/Selenium below target (need resuming), Vanadium back in range, Fluoride/Strontium still elevated, Iodine newly flagged over 2× ceiling. Full breakdown in the baseline reference doc.</li>
     </ul>
   </div>
 </main>
 
-<footer>S2 600 · Dosing Hub · Generated July 9, 2026</footer>
+<footer>S2 600 · Dosing Hub · Generated July 17, 2026</footer>
 
 <script>
 const dailyItems = [
@@ -168,14 +171,14 @@ const dailyItems = [
   {name:"Manganese — DIY Mn Gluconate (100 µg/mL)", dose:"4.5 ml"},
   {name:"Chromium — RM Classic", dose:"0.5 ml"},
   {name:"Nickel — RM Classic", dose:"1.6 ml"},
-  {name:"Iodine — Seachem drops", dose:"6–8 drops"},
 ];
 
 const stoppedItems = [
-  {name:"Cobalt — RM Classic", dose:"resume <0.50"},
-  {name:"Selenium — RM NANO", dose:"resume <0.45"},
-  {name:"Vanadium — drops", dose:"resume <2.0"},
-  {name:"Fluoride — RM", dose:"no more dosing"},
+  {name:"Cobalt — RM Classic", dose:"resume Jul 27 (ICP: 0.23, below target)"},
+  {name:"Selenium — RM NANO", dose:"resume Jul 27 (ICP: 0.31, below target)"},
+  {name:"Vanadium — drops", dose:"resume Jul 27 (ICP: 1.23, in range)"},
+  {name:"Fluoride — RM", dose:"no dosing (ICP: 2.04, still above 2.0)"},
+  {name:"Iodine — Seachem drops", dose:"STOP — ICP: 227.6 (target 75–95)"},
 ];
 
 // mysis feed every 2-3 days lights-out; photo every 3-4 days
@@ -189,7 +192,7 @@ const days = [
   {date:"Wed, Jul 15", feed:true,  photo:true},
   {date:"Thu, Jul 16", feed:false, photo:false},
   {date:"Fri, Jul 17", feed:true,  photo:false},
-  {date:"Sat, Jul 18", feed:false, photo:true, icp:true, note:"ICP 3 results expected around today — will confirm resume thresholds for Cobalt, Selenium, Vanadium, and Fluoride/Lithium trend."},
+  {date:"Sat, Jul 18", feed:false, photo:true, paused:true, note:"ICP 3 results received Jul 16 — see baseline doc for full breakdown. Trace dosing paused starting today through Jul 26 (travel). ESV Alk/Ca pumps keep running automated. Resume trace dosing Monday, July 27."},
 ];
 
 const container = document.getElementById('days');
@@ -200,7 +203,7 @@ days.forEach((day, i) => {
   det.open = i === 0;
 
   const hammerTasks = (day.feed ? 1 : 0) + (day.photo ? 1 : 0);
-  const totalItems = dailyItems.length + hammerTasks;
+  const totalItems = (day.paused ? 0 : dailyItems.length) + hammerTasks;
 
   det.innerHTML = `
     <summary>
@@ -210,6 +213,7 @@ days.forEach((day, i) => {
           ${day.feed ? '<span class="flag feed">MYSIS FEED</span>' : ''}
           ${day.photo ? '<span class="flag feed">PHOTO</span>' : ''}
           ${day.icp ? '<span class="flag icp">ICP DUE</span>' : ''}
+          ${day.paused ? '<span class="flag" style="background:var(--stop-dim); color:var(--stop);">TRAVEL — TRACE PAUSED</span>' : ''}
         </div>
       </div>
       <div style="display:flex; align-items:center; gap:14px;">
@@ -219,14 +223,21 @@ days.forEach((day, i) => {
     </summary>
     <div class="day-body">
       <div class="section-label">Daily trace elements</div>
-      ${dailyItems.map(it => `
+      ${day.paused ? `
+        ${dailyItems.map(it => `
+          <div class="item" style="opacity:0.5;">
+            <input type="checkbox" disabled>
+            <span class="item-name">${it.name} <span style="color:var(--stop); font-size:11px;">— PAUSED (travel)</span></span>
+            <span class="item-dose" style="text-decoration:line-through;">${it.dose}</span>
+          </div>`).join('')}
+      ` : dailyItems.map(it => `
         <label class="item">
           <input type="checkbox">
           <span class="item-name">${it.name}</span>
           <span class="item-dose">${it.dose}</span>
         </label>`).join('')}
 
-      <div class="section-label">Stopped — awaiting ICP 3</div>
+      <div class="section-label">Stopped — resume Jul 27 (or per ICP note)</div>
       ${stoppedItems.map(it => `
         <div class="item stopped">
           <input type="checkbox" disabled>
