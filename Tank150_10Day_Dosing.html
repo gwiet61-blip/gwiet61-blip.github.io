@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tank 150 — 10-Day Bridge Schedule</title>
+<title>Tank 150 — Dosing Schedule</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -130,22 +130,22 @@
 <header>
   <a class="hub-link" href="index.html"><span class="arrow">←</span> Back to hub</a>
   <div class="eyebrow">Tank 150 · SPS · Bridge Schedule</div>
-  <h1>10-Day Dosing Bridge</h1>
-  <p class="subtitle">July 9 – July 18, 2026 — covers the gap between the last 2-week checklist and the incoming ICP 4 results. Correction cycle completed July 6; next window opens ~July 28.</p>
+  <h1>Dosing Schedule</h1>
+  <p class="subtitle">Updated July 17, 2026 — trace dosing is paused July 18–26 for travel. Full 10-day active schedule below covers <strong>July 27 – August 5</strong>, when dosing resumes.</p>
   <svg class="pulse" viewBox="0 0 600 36" preserveAspectRatio="none">
     <path class="pulse" d="M0,18 L60,18 L75,4 L90,32 L105,18 L180,18 L195,10 L210,26 L225,18 L300,18 L315,4 L330,32 L345,18 L420,18 L435,10 L450,26 L465,18 L540,18 L555,4 L570,32 L585,18 L600,18"/>
   </svg>
 </header>
 
 <main>
-  <div class="banner">
-    <strong>Automated pumps (no manual dosing needed, monitor only):</strong> Alk — NaHCO3 @ 144 ml/day via DOS. Ca — CaCl2 @ <strong>90 ml/day</strong> (reduced from 100 on Jul 15 — Salifert holding at 470 mg/L, above ceiling but stable). Both pumps keep running unattended during travel.
-  </div>
-  <div class="banner">
-    <strong>Correction cycle:</strong> completed July 6 (Zinc was the final item, day 13). No corrections are due during this bridge window. Next cycle begins ~July 22, with the day 7–13 dosing window falling around <strong>July 28 – Aug 3</strong>.
-  </div>
   <div class="banner" style="border-color:rgba(240,171,252,0.35); color:#F0ABFC;">
-    <strong style="color:#F0ABFC;">Travel hold:</strong> all daily trace elements paused <strong>July 18 – July 26</strong>. Alk and Ca pumps continue running automated — no action needed on those. Resume trace dosing <strong>Monday, July 27</strong>.
+    <strong style="color:#F0ABFC;">Travel hold (now through Jul 26):</strong> all daily trace elements paused <strong>July 18 – July 26</strong>. Alk (144 ml/day) and Ca (90 ml/day) pumps continue running automated — no action needed. Schedule below begins <strong>Monday, July 27</strong> when trace dosing resumes.
+  </div>
+  <div class="banner">
+    <strong>Automated pumps (monitor only):</strong> Alk — NaHCO3 @ 144 ml/day via DOS. Ca — CaCl2 @ 90 ml/day (reduced from 100 on Jul 15 — Salifert holding at 470 mg/L, above ceiling but stable).
+  </div>
+  <div class="banner">
+    <strong>Correction dosing (from Reef Moonshiner's ICP-MS tool, computed from Jul 16 results):</strong> Barium, Molybdenum, Rubidium, Potassium (1 day each), Caesium (2 days), Strontium &amp; Zinc (3 days), Fluoride (5 days) — all starting Jul 27. This replaces the old 4-week correction-cycle estimate; going forward, corrections are computed fresh from each ICP rather than a fixed calendar rotation.
   </div>
 
   <div id="days"></div>
@@ -158,13 +158,13 @@
       <li><strong>Ca</strong> — Salifert 470 mg/L (above 420–440 ceiling). Holding pump at 100 ml/day, not cutting yet — retest in 5–7 days before adjusting.</li>
       <li><strong>Mg</strong> — 1344 true, in range. Next 477 ml BRS stock due when Trident approaches ~1283 raw.</li>
       <li><strong>Chaeto</strong> — do not harvest until back to tennis-ball size.</li>
-      <li><strong>ICP 4</strong> — sample sent July 8; results expected ~July 18. This will recalibrate Ca consumption rate definitively.</li>
-    <li><strong>Correction cycle</strong> — completed July 6. Next window opens ~July 28 – Aug 3 (Barium, Strontium, Fluoride, Nickel correction, Zinc). Not due during this bridge.</li>
+      <li><strong>ICP 4</strong> — received Jul 16. Confirmed Trident Ca offset (+32 this cycle), validated the Mg +17 formula, and showed Alk/Salinity/Nickel/Iodine all in or near range. Full breakdown in the baseline reference doc.</li>
+    <li><strong>Correction dosing</strong> — now computed per-ICP from the Reef Moonshiner's tool rather than a fixed 4-week cycle. This round (from Jul 16 results): Barium, Molybdenum, Rubidium, Potassium, Caesium, Strontium, Zinc, Fluoride — schedule below. Calcium, Magnesium, and Nickel need no correction this cycle.</li>
     </ul>
   </div>
 </main>
 
-<footer>Tank 150 · Dosing Hub · Generated July 9, 2026</footer>
+<footer>Tank 150 · Dosing Hub · Generated July 17, 2026</footer>
 
 <script>
 const dailyItems = [
@@ -184,20 +184,42 @@ const recurring = [
   {name:"TDO pellets", dose:"daily"},
 ];
 
-// Correction cycle completed July 6 (day 13). Day 1 of current cycle = June 24.
-// Next cycle's day 1 = July 22; next correction window (days 7-13) = ~July 28 - Aug 3.
-// No corrections fall inside this July 9-18 bridge window.
+// Travel pause: Jul 18-26 (not shown as individual cards — see banner above).
+// Active dosing resumes Monday, Jul 27. Corrections below computed directly from the
+// Reef Moonshiner's ICP-MS Assessment tool using the Jul 16 ICP 4 results (150 gal system).
 const days = [
-  {date:"Thu, Jul 9",  cycle:16, corrections:[]},
-  {date:"Fri, Jul 10", cycle:17, corrections:[]},
-  {date:"Sat, Jul 11", cycle:18, corrections:[]},
-  {date:"Sun, Jul 12", cycle:19, corrections:[]},
-  {date:"Mon, Jul 13", cycle:20, corrections:[]},
-  {date:"Tue, Jul 14", cycle:21, corrections:[], note:"Suggested Salifert Ca retest day (5–7 days since last 470 mg/L reading)."},
-  {date:"Wed, Jul 15", cycle:22, corrections:[]},
-  {date:"Thu, Jul 16", cycle:23, corrections:[]},
-  {date:"Fri, Jul 17", cycle:24, corrections:[]},
-  {date:"Sat, Jul 18", cycle:25, corrections:[], paused:true, note:"ICP 4 results received Jul 16 — Ca consumption, Alk offset, and trace confirmations already logged. Trace dosing paused starting today through Jul 26 (travel). Alk/Ca pumps keep running automated. Resume trace dosing Monday, July 27."},
+  {date:"Mon, Jul 27", cycle:34, corrections:[
+    {name:"Barium (final day)", dose:"36.57 ml"},
+    {name:"Molybdenum (final day)", dose:"14.76 ml"},
+    {name:"Rubidium (final day)", dose:"17.38 ml"},
+    {name:"Potassium (final day)", dose:"220.17 ml"},
+    {name:"Caesium (day 1 of 2)", dose:"1.08 ml"},
+    {name:"Strontium (day 1 of 3)", dose:"9.81 ml"},
+    {name:"Zinc (day 1 of 3)", dose:"0.90 ml"},
+    {name:"Fluoride (day 1 of 5)", dose:"51.10 ml"},
+  ], note:"Trace dosing resumes today after travel. First day of correction dosing — see banner above."},
+  {date:"Tue, Jul 28", cycle:35, corrections:[
+    {name:"Caesium (final day)", dose:"1.08 ml"},
+    {name:"Strontium (day 2 of 3)", dose:"9.81 ml"},
+    {name:"Zinc (day 2 of 3)", dose:"0.90 ml"},
+    {name:"Fluoride (day 2 of 5)", dose:"51.10 ml"},
+  ]},
+  {date:"Wed, Jul 29", cycle:36, corrections:[
+    {name:"Strontium (final day)", dose:"9.81 ml"},
+    {name:"Zinc (final day)", dose:"0.90 ml"},
+    {name:"Fluoride (day 3 of 5)", dose:"51.10 ml"},
+  ]},
+  {date:"Thu, Jul 30", cycle:37, corrections:[
+    {name:"Fluoride (day 4 of 5)", dose:"51.10 ml"},
+  ]},
+  {date:"Fri, Jul 31", cycle:38, corrections:[
+    {name:"Fluoride (final day)", dose:"51.10 ml"},
+  ], note:"Correction dosing complete after today. Next correction plan will be computed from the next ICP results."},
+  {date:"Sat, Aug 1",  cycle:39, corrections:[]},
+  {date:"Sun, Aug 2",  cycle:40, corrections:[]},
+  {date:"Mon, Aug 3",  cycle:41, corrections:[]},
+  {date:"Tue, Aug 4",  cycle:42, corrections:[]},
+  {date:"Wed, Aug 5",  cycle:43, corrections:[], note:"Suggested Salifert Ca retest day."},
 ];
 
 const container = document.getElementById('days');
@@ -213,7 +235,6 @@ days.forEach((day, i) => {
     <summary>
       <div class="day-head">
         <span class="day-date">${day.date}</span>
-        <span class="day-cycle">cycle day ${day.cycle}</span>
         <div class="day-flags">
           ${day.corrections.length ? '<span class="flag correction">CORRECTION</span>' : ''}
           ${day.icp ? '<span class="flag icp">ICP DUE</span>' : ''}
@@ -250,7 +271,7 @@ days.forEach((day, i) => {
         </label>`).join('')}
 
       ${day.corrections.length ? `
-        <div class="section-label">Correction cycle — today only</div>
+        <div class="section-label">Correction dosing (from Jul 16 ICP)</div>
         ${day.corrections.map(it => `
           <label class="item correction">
             <input type="checkbox">
