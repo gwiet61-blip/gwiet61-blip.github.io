@@ -139,10 +139,10 @@
 
 <main>
   <div class="banner" style="border-color:rgba(240,171,252,0.35); color:#F0ABFC;">
-    <strong style="color:#F0ABFC;">Travel hold (now through Jul 26):</strong> all daily trace elements paused <strong>July 18 – July 26</strong>. Alk (144 ml/day) and Ca (90 ml/day) pumps continue running automated — no action needed. Schedule below begins <strong>Monday, July 27</strong> when trace dosing resumes.
+    <strong style="color:#F0ABFC;">Travel hold (now through Jul 26):</strong> all daily trace elements paused <strong>July 18 – July 26</strong>. Alk and Ca pumps continued running automated during travel, with rates adjusted remotely (see below) — no action needed. Schedule below begins <strong>Monday, July 27</strong> when trace dosing resumes.
   </div>
   <div class="banner">
-    <strong>Automated pumps (monitor only):</strong> Alk — NaHCO3 @ 144 ml/day via DOS. Ca — CaCl2 @ 90 ml/day (reduced from 100 on Jul 15 — Salifert holding at 470 mg/L, above ceiling but stable).
+    <strong>Automated pumps (monitor only):</strong> <strong>Jul 24 remote adjustment</strong> — Alk bumped from 144 → <strong>160 ml/day</strong> after noticing a drop via remote monitoring; Ca bumped from 90 → <strong>95 ml/day</strong> after noticing a small Ca drop. <strong>Jul 26 readings</strong> (only ~2 days at new rates): Alk — Trident 7.01, Salifert 7.5 (true ≈7.53, still below 7.8 floor but recovering). Ca — Trident 440, Salifert 460 (holding roughly steady, good early sign). Mg — Trident 1341 (true ≈1358), Salifert 1290. <strong>Retest all three around Jul 29–30</strong> to confirm the new rates have settled things into range.
   </div>
   <div class="banner">
     <strong>Correction dosing (from Reef Moonshiner's ICP-MS tool, computed from Jul 16 results):</strong> Barium, Molybdenum, Rubidium, Potassium (1 day each), Caesium (2 days), Strontium &amp; Zinc (3 days), Fluoride (5 days) — all starting Jul 27. This replaces the old 4-week correction-cycle estimate; going forward, corrections are computed fresh from each ICP rather than a fixed calendar rotation.
@@ -155,7 +155,7 @@
     <ul>
       <li><strong>NO3</strong> — at 2.2 mg/L (below 4 floor and dropping). Continue TDO pellets daily + reduced frozen-food rinsing. If not trending back above 4 by mid-window, consider KNO3.</li>
       <li><strong>PO4</strong> — at 0.13–0.14 mg/L (above 0.09 ceiling). GFO 12–3pm daily should hold it. If it exceeds 0.15, extend GFO to 4 hrs.</li>
-      <li><strong>Ca</strong> — Salifert 470 mg/L (above 420–440 ceiling). Holding pump at 100 ml/day, not cutting yet — retest in 5–7 days before adjusting.</li>
+      <li><strong>Ca</strong> — Salifert 460 mg/L (Jul 26), holding roughly steady since the pump bump to 95 ml/day on Jul 24. Retest Jul 29–30 alongside Alk and Mg.</li>
       <li><strong>Mg</strong> — 1344 true, in range. Next 477 ml BRS stock due when Trident approaches ~1283 raw.</li>
       <li><strong>Chaeto</strong> — do not harvest until back to tennis-ball size.</li>
       <li><strong>ICP 4</strong> — received Jul 16. Confirmed Trident Ca offset (+32 this cycle), validated the Mg +17 formula, and showed Alk/Salinity/Nickel/Iodine all in or near range. Full breakdown in the baseline reference doc.</li>
@@ -208,10 +208,10 @@ const days = [
     {name:"Strontium (final day)", dose:"9.81 ml"},
     {name:"Zinc (final day)", dose:"0.90 ml"},
     {name:"Fluoride (day 3 of 5)", dose:"51.10 ml"},
-  ]},
+  ], note:"Retest window opens — check Alk, Ca, and Mg against the Jul 24 rate bumps (Alk 160 ml/day, Ca 95 ml/day)."},
   {date:"Thu, Jul 30", cycle:37, corrections:[
     {name:"Fluoride (day 4 of 5)", dose:"51.10 ml"},
-  ]},
+  ], note:"Last day of the suggested retest window for Alk/Ca/Mg — test today if not done yesterday."},
   {date:"Fri, Jul 31", cycle:38, corrections:[
     {name:"Fluoride (final day)", dose:"51.10 ml"},
   ], note:"Correction dosing complete after today. Next correction plan will be computed from the next ICP results."},
