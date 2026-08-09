@@ -134,7 +134,7 @@
   <a class="hub-link" href="index.html"><span class="arrow">←</span> Back to hub</a>
   <div class="eyebrow">S2 600 · LPS · Bridge Schedule</div>
   <h1>Dosing Schedule</h1>
-  <p class="subtitle">Updated July 17, 2026 — trace dosing is paused July 18–26 for travel. Full 10-day active schedule below covers <strong>July 27 – August 5</strong>, when dosing resumes. Hammer recession remains the primary focus.</p>
+  <p class="subtitle">Updated August 9, 2026 — trace dosing resumes today after a second travel pause (Aug 1–9). Schedule below covers <strong>August 9 – 18</strong>. Hammer recession remains the primary focus.</p>
   <p class="subtitle" style="margin-top:8px; color:var(--stop);">Volume correction: system is 70 gal total (not 90) — current water volume in tank + sump is ~65 gal. All dose-per-gallon math should reference 65–70 gal.</p>
   <svg class="pulse" viewBox="0 0 600 36" preserveAspectRatio="none">
     <path class="pulse" d="M0,18 L60,18 L75,4 L90,32 L105,18 L180,18 L195,10 L210,26 L225,18 L300,18 L315,4 L330,32 L345,18 L420,18 L435,10 L450,26 L465,18 L540,18 L555,4 L570,32 L585,18 L600,18"/>
@@ -143,16 +143,16 @@
 
 <main>
   <div class="banner" style="border-color:rgba(240,171,252,0.35);">
-    <strong style="color:#F0ABFC;">Travel hold (now through Jul 26):</strong> all daily trace elements paused <strong>July 18 – July 26</strong>. ESV Alk pump continues running automated — no action needed. Ca pump stays off regardless (see below). Schedule begins <strong>Monday, July 27</strong> when trace dosing resumes.
+    <strong style="color:#F0ABFC;">Second travel pause now ended:</strong> daily trace elements were stopped <strong>July 31 – August 9</strong> (a second gap, separate from the Jul 18–26 pause). ESV pumps ran automated throughout. <strong>Trace dosing resumes today, Aug 9</strong> — Cobalt, Selenium, and Vanadium resume alongside the rest.
   </div>
   <div class="banner danger">
-    <strong>ICP 3 confirmed (received Jul 16):</strong> Cobalt, Selenium, Vanadium are daily-dosed elements (not correction-band elements per the Reef Moonshiner's method) — all resume standard daily dosing Jul 27. Fluoride (2.04 mg/L, target 1.5) and <strong>Iodine (227.6 µg/L, target 75–95 — over 2× ceiling)</strong> both stay stopped past Jul 27 — retest both before resuming either.
-  </div>
-  <div class="banner" style="border-color:rgba(240,171,252,0.35);">
-    <strong style="color:var(--correction);">Correction dosing (from Reef Moonshiner's ICP-MS tool, computed from Jul 16 results):</strong> Potassium &amp; Rubidium (1 day each), Molybdenum &amp; Caesium (2 days each) — all starting Jul 27. Calcium, Magnesium, Strontium, Barium, Fluoride, Zinc, and Nickel all need no correction this cycle — already at or above target.
+    <strong>Still stopped:</strong> Fluoride (was 2.04 mg/L, target 1.5) and <strong>Iodine (was 227.6 µg/L, target 75–95 — over 2× ceiling)</strong> — both need a fresh retest before resuming either. Neither has been rechecked since the Jul 16 ICP.
   </div>
   <div class="banner">
-    <strong>Automated pumps (monitor only):</strong> <strong>Jul 27 update</strong> — Alk 7.2 dKH (down slightly from 7.3 on Jul 16 despite steady 10 ml/day dosing — pump increased to <strong>15 ml/day</strong>). Ca 440 mg/L (at the top of target, restart threshold reached) and Mg 1290 mg/L (Salifert — likely reads low on this tank per known offset, not necessarily a real deficiency) — ESV Component 2 (Ca/Mg combined) restarted at <strong>15 ml/day</strong>. <strong>Retest Alk, Ca, and Mg around Jul 30–31</strong> (3–4 days out) to check the new rates and adjust.
+    <strong>Automated pumps (monitor only):</strong> Alk 18 ml/day, Ca/Mg (Component 2) 15 ml/day. <strong>Aug 9 readings</strong>: Alk 8.5 dKH (top of range — the 18 ml/day rate caught it up well). Ca 440 mg/L (settled at target ceiling). Mg 1350 mg/L (top of range, following the 180 ml BRS top-up on Jul 31). All three sitting at the top edge of target — no further increases recommended; next retest should indicate if a slight trim is warranted.
+  </div>
+  <div class="banner" style="border-color:rgba(251,191,36,0.35);">
+    <strong style="color:var(--stop);">Watch this window:</strong> per the Reef Moonshiner's Handbook, resuming trace element dosing after a pause often <em>increases</em> coral metabolism and Ca/Alk consumption. Worth testing sooner than usual this week rather than assuming current rates hold steady — especially since Alk/Ca/Mg are all already at the top of their ranges.
   </div>
 
   <div id="days"></div>
@@ -160,17 +160,16 @@
   <div class="watch">
     <h2>Ongoing watch items this window</h2>
     <ul>
-      <li><strong>Hammer recession</strong> — primary focus. Stable, not worsening, not yet recovering. Recovery timeline 4–8 weeks minimum.</li>
+      <li><strong>Hammer recession</strong> — primary focus. Recovery timeline 4–8 weeks minimum from original onset; continue mysis feeding and photo tracking per the schedule below.</li>
       <li><strong>GFO</strong> — stays paused until Hammer shows active tissue recovery. When restarted: 30–45 min every other day max, test PO4 every 3 days, max 0.05 mg/L drop per week.</li>
-      <li><strong>NO3</strong> — ~19.3 mg/L (above 4–15 ceiling), ticked up despite last WC. Fortnightly 25% water changes remain the primary export — worth confirming the WC is actually netting a reduction.</li>
-      <li><strong>Mg</strong> — 1410–1380 mg/L, now slightly above 1300–1350 target after the 1170 correction. Test again this window; don't let ESV Ca stay off long enough to crash it a third time.</li>
-      <li><strong>Fluoride</strong> — 2.04 mg/L (ICP, Jul 8 sample), still just above 2.0 ceiling. No dosing.</li>
-      <li><strong>ICP 3 — received Jul 16.</strong> Cobalt/Selenium below target (need resuming), Vanadium back in range, Fluoride/Strontium still elevated, Iodine newly flagged over 2× ceiling. Full breakdown in the baseline reference doc.</li>
+      <li><strong>Livestock note</strong> — Yellow Tang lost during the first travel window (~Jul 18–26); working assessment was HLLE with possible contribution from the earlier Fluoride overdose. All other livestock unaffected as of last check — worth a visual health check on remaining fish given this history.</li>
+      <li><strong>Alk/Ca/Mg</strong> — all three sitting at the top of their target ranges as of Aug 9. Watch closely this week (see banner above) rather than assuming current rates are the long-term steady state.</li>
+      <li><strong>Fluoride &amp; Iodine</strong> — both still stopped, unretested since the Jul 16 ICP (2.04 mg/L and 227.6 µg/L respectively at that time). Retest both before resuming either.</li>
     </ul>
   </div>
 </main>
 
-<footer>S2 600 · Dosing Hub · Generated July 17, 2026</footer>
+<footer>S2 600 · Dosing Hub · Generated August 9, 2026</footer>
 
 <script>
 const dailyItems = [
@@ -179,9 +178,9 @@ const dailyItems = [
   {name:"Manganese — DIY Mn Gluconate (100 µg/mL)", dose:"4.5 ml"},
   {name:"Chromium — RM Classic", dose:"0.5 ml"},
   {name:"Nickel — RM Classic", dose:"1.6 ml"},
-  {name:"Cobalt — RM Classic (resumed Jul 27)", dose:"1.1 ml"},
-  {name:"Selenium — RM NANO (resumed Jul 27)", dose:"2.0 ml"},
-  {name:"Vanadium — drops (resumed Jul 27)", dose:"3 drops"},
+  {name:"Cobalt — RM Classic", dose:"1.1 ml"},
+  {name:"Selenium — RM NANO", dose:"2.0 ml"},
+  {name:"Vanadium — drops", dose:"3 drops"},
 ];
 
 const stoppedItems = [
@@ -189,28 +188,20 @@ const stoppedItems = [
   {name:"Iodine — Seachem drops", dose:"STOP — ICP: 227.6 (target 75–95) — retest first"},
 ];
 
-// Travel pause: Jul 18-26 (not shown as individual cards — see banner above).
-// Active dosing resumes Monday, Jul 27. Mysis feed every 2-3 days lights-out; photo every 3-4 days.
-// Corrections computed via Reef Moonshiner's ICP-MS tool from Jul 16 results (65 gal system).
+// Second travel pause: Jul 31 - Aug 9 (not shown as individual cards — see banner above).
+// Trace dosing resumes today, Aug 9. Mysis feed every 2-3 days lights-out; photo every 3-4 days.
+// No corrections due this window — Jul 16 ICP correction plan completed Jul 28.
 const days = [
-  {date:"Mon, Jul 27", feed:true,  photo:true,  corrections:[
-    {name:"Potassium (final day)", dose:"85.36 ml"},
-    {name:"Rubidium (final day)", dose:"20.37 ml"},
-    {name:"Molybdenum (day 1 of 2)", dose:"6.03 ml"},
-    {name:"Caesium (day 1 of 2)", dose:"0.42 ml"},
-  ], note:"Trace dosing resumes today after travel. Retest Alk/Ca before deciding on pump changes."},
-  {date:"Tue, Jul 28", feed:false, photo:false, corrections:[
-    {name:"Molybdenum (final day)", dose:"6.03 ml"},
-    {name:"Caesium (final day)", dose:"0.42 ml"},
-  ], note:"Correction dosing complete after today."},
-  {date:"Wed, Jul 29", feed:true,  photo:false, corrections:[]},
-  {date:"Thu, Jul 30", feed:false, photo:true,  corrections:[], note:"Retest window opens — check Alk, Ca, and Mg against the new 15 ml/day rates on both ESV pumps."},
-  {date:"Fri, Jul 31", feed:true,  photo:false, corrections:[], note:"Last day of the suggested retest window for Alk/Ca/Mg — test today if not done yesterday."},
-  {date:"Sat, Aug 1",  feed:false, photo:false, corrections:[]},
-  {date:"Sun, Aug 2",  feed:true,  photo:true,  corrections:[]},
-  {date:"Mon, Aug 3",  feed:false, photo:false, corrections:[]},
-  {date:"Tue, Aug 4",  feed:true,  photo:false, corrections:[]},
-  {date:"Wed, Aug 5",  feed:false, photo:true,  corrections:[], note:"Good checkpoint to retest Fluoride and Iodine before resuming either."},
+  {date:"Sun, Aug 9",  feed:true,  photo:true,  corrections:[], note:"Trace dosing resumes today after the second travel pause, including Cobalt, Selenium, and Vanadium."},
+  {date:"Mon, Aug 10", feed:false, photo:false, corrections:[]},
+  {date:"Tue, Aug 11", feed:true,  photo:false, corrections:[], note:"Per Handbook guidance, watch Alk/Ca/Mg closely this week — resuming trace dosing can increase consumption, and all three are already at the top of range."},
+  {date:"Wed, Aug 12", feed:false, photo:true,  corrections:[]},
+  {date:"Thu, Aug 13", feed:true,  photo:false, corrections:[], note:"Suggested Alk/Ca/Mg retest day. Also a good checkpoint to retest Fluoride and Iodine before resuming either."},
+  {date:"Fri, Aug 14", feed:false, photo:false, corrections:[]},
+  {date:"Sat, Aug 15", feed:true,  photo:true,  corrections:[]},
+  {date:"Sun, Aug 16", feed:false, photo:false, corrections:[]},
+  {date:"Mon, Aug 17", feed:true,  photo:false, corrections:[]},
+  {date:"Tue, Aug 18", feed:false, photo:true,  corrections:[], note:"End of this schedule window — check in for next 10-day update."},
 ];
 
 const container = document.getElementById('days');

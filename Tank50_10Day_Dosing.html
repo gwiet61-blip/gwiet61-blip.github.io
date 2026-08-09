@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tank 50 — Dosing Schedule</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0F14;
+    --surface:#141B24;
+    --border:#232D3A;
+    --text:#E7ECF2;
+    --muted:#8B98A9;
+    --accent:#F87171;
+    --accent-dim:#3A1E1E;
+    --warn:#FBBF24;
+    --warn-dim:#4A3A14;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:'Inter', sans-serif; line-height:1.5;
+    padding:0 0 80px;
+  }
+  .hub-link{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:0.04em;
+    color:var(--muted); text-decoration:none; margin-bottom:20px;
+  }
+  .hub-link:hover{ color:var(--accent); }
+  .hub-link .arrow{ transition:transform 0.15s ease; }
+  .hub-link:hover .arrow{ transform:translateX(-3px); }
+  header{
+    padding:48px 24px 32px; max-width:920px; margin:0 auto;
+    border-bottom:1px solid var(--border);
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace; font-size:12px;
+    letter-spacing:0.12em; text-transform:uppercase; color:var(--accent);
+    margin-bottom:12px;
+  }
+  h1{
+    font-family:'Fraunces', serif; font-weight:600; font-size:clamp(28px,5vw,42px);
+    margin:0 0 8px; letter-spacing:-0.01em;
+  }
+  .subtitle{ color:var(--muted); font-size:15px; max-width:640px; }
+  .pulse{ width:100%; height:36px; margin-top:24px; }
+  .pulse path{
+    fill:none; stroke:var(--accent); stroke-width:1.5;
+    stroke-dasharray:600; stroke-dashoffset:600;
+    animation:draw 3.4s ease-in-out infinite;
+    opacity:0.85;
+  }
+  @media (prefers-reduced-motion: reduce){ .pulse path{ animation:none; stroke-dashoffset:0; } }
+  @keyframes draw{
+    0%{stroke-dashoffset:600;} 50%{stroke-dashoffset:0;} 100%{stroke-dashoffset:-600;}
+  }
+  main{ max-width:920px; margin:0 auto; padding:32px 24px; }
+  .banner{
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:16px 20px; font-size:14px; color:var(--muted); margin-bottom:16px;
+  }
+  .banner strong{ color:var(--text); }
+  .day-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    margin-bottom:16px; overflow:hidden;
+  }
+  .day-card summary{
+    list-style:none; cursor:pointer; padding:18px 20px;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .day-card summary::-webkit-details-marker{ display:none; }
+  .day-head{ display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
+  .day-date{ font-family:'Fraunces', serif; font-weight:600; font-size:19px; }
+  .day-flags{ display:flex; gap:6px; flex-wrap:wrap; }
+  .flag{
+    font-family:'JetBrains Mono', monospace; font-size:10.5px; padding:3px 8px;
+    border-radius:20px; letter-spacing:0.04em; white-space:nowrap;
+  }
+  .flag.wc{ background:var(--warn-dim); color:var(--warn); }
+  .flag.test{ background:var(--accent-dim); color:var(--accent); }
+  .progress{ font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--muted); }
+  .chevron{ transition:transform 0.2s ease; color:var(--muted); }
+  details[open] .chevron{ transform:rotate(90deg); }
+  .day-body{ padding:0 20px 20px; border-top:1px solid var(--border); }
+  .section-label{
+    font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--muted); margin:18px 0 8px;
+  }
+  .item{
+    display:flex; align-items:center; gap:12px; padding:9px 0;
+    border-bottom:1px solid rgba(255,255,255,0.03);
+  }
+  .item:last-child{ border-bottom:none; }
+  .item input[type=checkbox]{
+    width:18px; height:18px; accent-color:var(--accent); flex-shrink:0; cursor:pointer;
+  }
+  .item-name{ flex:1; font-size:14.5px; }
+  .item-dose{
+    font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--muted); white-space:nowrap;
+  }
+  .note{ font-size:13px; color:var(--muted); padding:10px 0 4px; line-height:1.6; }
+  .watch{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:20px; margin-top:32px;
+  }
+  .watch h2{ font-family:'Fraunces', serif; font-weight:600; font-size:18px; margin:0 0 12px; }
+  .watch ul{ margin:0; padding-left:18px; color:var(--muted); font-size:14px; line-height:1.8; }
+  .watch li strong{ color:var(--text); }
+  footer{ max-width:920px; margin:32px auto 0; padding:0 24px; color:var(--muted); font-size:12px; text-align:center; }
+  a{ color:var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="hub-link" href="index.html"><span class="arrow">←</span> Back to hub</a>
+  <div class="eyebrow">Tank 50 · Single Coral · Dosing Schedule</div>
+  <h1>Dosing Schedule</h1>
+  <p class="subtitle">Updated August 9, 2026 — covers <strong>August 9 – 18</strong>. First schedule for this tank now that Alk dosing is active again and a water change/Mg correction are planned this week.</p>
+  <svg class="pulse" viewBox="0 0 600 36" preserveAspectRatio="none">
+    <path class="pulse" d="M0,18 L60,18 L75,4 L90,32 L105,18 L180,18 L195,10 L210,26 L225,18 L300,18 L315,4 L330,32 L345,18 L420,18 L435,10 L450,26 L465,18 L540,18 L555,4 L570,32 L585,18 L600,18"/>
+  </svg>
+</header>
+
+<main>
+  <div class="banner">
+    <strong>Automated pumps:</strong> ESV Part 1 (Alk) at 1.5 ml/day — restarted Jul 31, but showed <strong>zero net movement</strong> over the following 9 days (7.7 → 7.7 dKH). Worth checking the pump is actually dosing (tubing, calibration, air lock) before assuming the rate alone is the fix. If confirmed working, increase to ~3 ml/day. ESV Part 2 (Ca) stays off — Ca at 455 mg/L (Aug 9), still above the 440 restart threshold but declining ~1.1 mg/L/day.
+  </div>
+  <div class="banner" style="border-color:rgba(251,191,36,0.35);">
+    <strong style="color:var(--warn);">This week's plan:</strong> 5-gallon water change (last WC was Jul 11 — 29 days ago, overdue), plus a standalone <strong>~92 ml BRS Mag-Mix</strong> dose to correct Mg (currently 1275 mg/L, below the 1300 floor). Dose the Mg separately from the WC, not combined, to keep the effects easy to read on the next test. <strong>Pause the ESV Alk pump during the water change</strong> — Reef Crystals adds ~1 dKH per WC.
+  </div>
+
+  <div id="days"></div>
+
+  <div class="watch">
+    <h2>Ongoing watch items this window</h2>
+    <ul>
+      <li><strong>Alk pump function</strong> — top priority this week. Flat reading over 9 days at 1.5 ml/day is unusual; confirm the pump is actually delivering before raising the rate.</li>
+      <li><strong>Ca</strong> — 455 mg/L (Aug 9), trending down from 490 (Jul 12) at roughly 1.1–1.3 mg/L/day. Watch as it approaches the 440 restart threshold — likely within the next couple of weeks at this rate.</li>
+      <li><strong>Mg</strong> — 1275 mg/L (Aug 9), below the 1300 floor. One-time correction planned this week; retest 3–4 days after dosing to confirm it landed near target (~1325 mg/L) without overshooting.</li>
+      <li><strong>Water change cadence</strong> — originally planned as fortnightly; last one was 29 days ago. This week's WC re-establishes the routine — consider setting a recurring reminder going forward.</li>
+      <li><strong>Main Hammer colony</strong> — healthy, widely open as of last note. Two previously stressed heads: one improving, one still pinpoint — keep monitoring for tissue recession.</li>
+    </ul>
+  </div>
+</main>
+
+<footer>Tank 50 · Dosing Hub · Generated August 9, 2026</footer>
+
+<script>
+const days = [
+  {date:"Sun, Aug 9",  wc:false, test:false, note:"Confirm ESV Alk pump is actually dosing (check tubing/calibration) before assuming the rate needs raising."},
+  {date:"Mon, Aug 10", wc:false, test:false},
+  {date:"Tue, Aug 11", wc:false, test:false},
+  {date:"Wed, Aug 12", wc:true,  test:false, note:"Suggested water change day — pause ESV Alk pump before/during the WC. Restart once Salifert confirms Alk below 8.5."},
+  {date:"Thu, Aug 13", wc:false, test:false, note:"Dose ~92 ml BRS Mag-Mix stock today (separately from the WC) to correct Mg toward ~1325 mg/L."},
+  {date:"Fri, Aug 14", wc:false, test:false},
+  {date:"Sat, Aug 15", wc:false, test:false},
+  {date:"Sun, Aug 16", wc:false, test:false},
+  {date:"Mon, Aug 17", wc:false, test:true, note:"Retest Alk, Ca, and Mg — 3-4 days after the Mg dose to check it landed near target."},
+  {date:"Tue, Aug 18", wc:false, test:false, note:"End of this schedule window — check in for next 10-day update."},
+];
+
+const tasks = [
+  {name:"ESV Part 1 (Alk) — confirm dosing / adjust if needed", dose:"1.5 ml/day"},
+];
+
+const container = document.getElementById('days');
+
+days.forEach((day, i) => {
+  const det = document.createElement('details');
+  det.className = 'day-card';
+  det.open = i === 0;
+
+  const extraTasks = (day.wc ? 1 : 0) + (day.test ? 1 : 0);
+  const totalItems = tasks.length + extraTasks;
+
+  det.innerHTML = `
+    <summary>
+      <div class="day-head">
+        <span class="day-date">${day.date}</span>
+        <div class="day-flags">
+          ${day.wc ? '<span class="flag wc">WATER CHANGE</span>' : ''}
+          ${day.test ? '<span class="flag test">RETEST</span>' : ''}
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:14px;">
+        <span class="progress">0/${totalItems}</span>
+        <span class="chevron">▶</span>
+      </div>
+    </summary>
+    <div class="day-body">
+      <div class="section-label">Daily / ongoing</div>
+      ${tasks.map(it => `
+        <label class="item">
+          <input type="checkbox">
+          <span class="item-name">${it.name}</span>
+          <span class="item-dose">${it.dose}</span>
+        </label>`).join('')}
+
+      ${day.wc ? `
+        <div class="section-label">Water change</div>
+        <label class="item">
+          <input type="checkbox">
+          <span class="item-name">Pause ESV Alk pump, perform ~5 gal water change, restart pump once Alk confirmed below 8.5</span>
+          <span class="item-dose">5 gal</span>
+        </label>
+      ` : ''}
+
+      ${day.test ? `
+        <div class="section-label">Testing</div>
+        <label class="item">
+          <input type="checkbox">
+          <span class="item-name">Retest Alk, Ca, Mg via Salifert</span>
+          <span class="item-dose">3 tests</span>
+        </label>
+      ` : ''}
+
+      ${day.note ? `<div class="note">${day.note}</div>` : ''}
+    </div>
+  `;
+
+  container.appendChild(det);
+
+  const boxes = det.querySelectorAll('input[type=checkbox]');
+  const progressEl = det.querySelector('.progress');
+  boxes.forEach(box => {
+    box.addEventListener('change', () => {
+      const checked = det.querySelectorAll('input[type=checkbox]:checked').length;
+      progressEl.textContent = `${checked}/${totalItems}`;
+    });
+  });
+});
+</script>
+
+</body>
+</html>
