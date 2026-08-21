@@ -134,7 +134,7 @@
   <a class="hub-link" href="index.html"><span class="arrow">←</span> Back to hub</a>
   <div class="eyebrow">S2 600 · LPS · Bridge Schedule</div>
   <h1>Dosing Schedule</h1>
-  <p class="subtitle">Updated August 9, 2026 — trace dosing resumes today after a second travel pause (Aug 1–9). Schedule below covers <strong>August 9 – 18</strong>. Hammer recession remains the primary focus.</p>
+  <p class="subtitle">Updated August 21, 2026 — extended schedule covering <strong>August 21 – September 15</strong>. Next ICP not planned until Sept 15. Hammer recession remains the primary focus.</p>
   <p class="subtitle" style="margin-top:8px; color:var(--stop);">Volume correction: system is 70 gal total (not 90) — current water volume in tank + sump is ~65 gal. All dose-per-gallon math should reference 65–70 gal.</p>
   <svg class="pulse" viewBox="0 0 600 36" preserveAspectRatio="none">
     <path class="pulse" d="M0,18 L60,18 L75,4 L90,32 L105,18 L180,18 L195,10 L210,26 L225,18 L300,18 L315,4 L330,32 L345,18 L420,18 L435,10 L450,26 L465,18 L540,18 L555,4 L570,32 L585,18 L600,18"/>
@@ -142,34 +142,48 @@
 </header>
 
 <main>
-  <div class="banner" style="border-color:rgba(240,171,252,0.35);">
-    <strong style="color:#F0ABFC;">Second travel pause now ended:</strong> daily trace elements were stopped <strong>July 31 – August 9</strong> (a second gap, separate from the Jul 18–26 pause). ESV pumps ran automated throughout. <strong>Trace dosing resumes today, Aug 9</strong> — Cobalt, Selenium, and Vanadium resume alongside the rest.
-  </div>
   <div class="banner danger">
-    <strong>Still stopped:</strong> Fluoride (was 2.04 mg/L, target 1.5) and <strong>Iodine (was 227.6 µg/L, target 75–95 — over 2× ceiling)</strong> — both need a fresh retest before resuming either. Neither has been rechecked since the Jul 16 ICP.
+    <strong>Still stopped:</strong> Fluoride (was 2.04 mg/L, target 1.5) and <strong>Iodine (was 227.6 µg/L, target 75–95 — over 2× ceiling)</strong> — both need a fresh retest before resuming either. Neither has been rechecked since the Jul 15 ICP.
   </div>
-  <div class="banner">
-    <strong>Automated pumps (monitor only):</strong> Alk 18 ml/day, Ca/Mg (Component 2) 15 ml/day. <strong>Aug 9 readings</strong>: Alk 8.5 dKH (top of range — the 18 ml/day rate caught it up well). Ca 440 mg/L (settled at target ceiling). Mg 1350 mg/L (top of range, following the 180 ml BRS top-up on Jul 31). All three sitting at the top edge of target — no further increases recommended; next retest should indicate if a slight trim is warranted.
+  <div class="banner" style="border-color:rgba(248,113,113,0.3);">
+    <strong style="color:var(--danger);">Status as of Aug 16 (post-WC):</strong> 25-gallon water change performed (larger than the planned 20 gal). <strong>ESV Part 1 (Alk) is currently OFF</strong>, paused since the WC — restart at a reduced <strong>~14–15 ml/day</strong> (down from 18) once Salifert confirms Alk below 8.5. Part 2 (Ca/Mg) holding at 15 ml/day, unchanged. Retest Mg before dosing any standalone top-up — the larger-than-planned WC volume may have already shifted it.
   </div>
   <div class="banner" style="border-color:rgba(251,191,36,0.35);">
-    <strong style="color:var(--stop);">Watch this window:</strong> per the Reef Moonshiner's Handbook, resuming trace element dosing after a pause often <em>increases</em> coral metabolism and Ca/Alk consumption. Worth testing sooner than usual this week rather than assuming current rates hold steady — especially since Alk/Ca/Mg are all already at the top of their ranges.
+    <strong style="color:var(--stop);">Recurring Mg pattern:</strong> Mg has now dropped below floor three separate times despite Part 2 running continuously. The fixed Ca:Mg ratio in the combined stock may not match this tank's actual consumption — worth building a small recurring standalone Mg dose into the routine going forward.
+  </div>
+  <div class="banner" style="border-color:rgba(251,191,36,0.35);">
+    <strong style="color:var(--warn);">Reminder:</strong> Caesium is still deferred — not currently in stock, add with the next supply order.
   </div>
 
-  <div id="days"></div>
+  <div class="section-label" style="margin-top:8px;">Daily routine (every day, Aug 21 – Sept 15)</div>
+  <div class="day-card" style="padding:4px 0;">
+    <div class="day-body" style="border-top:none; padding-top:16px;">
+      <div class="section-label">Daily trace elements</div>
+      <div id="dailyList"></div>
+      <div class="section-label">Stopped — retest before resuming</div>
+      <div id="stoppedList"></div>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-top:28px;">Hammer care (per the cadence, not literal daily)</div>
+  <div class="banner">Target-feed mysis at lights-out every 2–3 days. Progress photo every 3–4 days for trend tracking. Recovery timeline 4–8 weeks minimum from original onset.</div>
+
+  <div class="section-label" style="margin-top:28px;">Key checkpoints this window</div>
+  <div id="checkpoints"></div>
 
   <div class="watch">
     <h2>Ongoing watch items this window</h2>
     <ul>
-      <li><strong>Hammer recession</strong> — primary focus. Recovery timeline 4–8 weeks minimum from original onset; continue mysis feeding and photo tracking per the schedule below.</li>
+      <li><strong>Alk restart</strong> — top priority. Pump is off; check Salifert soon and restart at ~14–15 ml/day once confirmed below 8.5. Don't leave it off indefinitely.</li>
+      <li><strong>Hammer recession</strong> — primary focus. Recovery timeline 4–8 weeks minimum from original onset.</li>
       <li><strong>GFO</strong> — stays paused until Hammer shows active tissue recovery. When restarted: 30–45 min every other day max, test PO4 every 3 days, max 0.05 mg/L drop per week.</li>
-      <li><strong>Livestock note</strong> — Yellow Tang lost during the first travel window (~Jul 18–26); working assessment was HLLE with possible contribution from the earlier Fluoride overdose. All other livestock unaffected as of last check — worth a visual health check on remaining fish given this history.</li>
-      <li><strong>Alk/Ca/Mg</strong> — all three sitting at the top of their target ranges as of Aug 9. Watch closely this week (see banner above) rather than assuming current rates are the long-term steady state.</li>
-      <li><strong>Fluoride &amp; Iodine</strong> — both still stopped, unretested since the Jul 16 ICP (2.04 mg/L and 227.6 µg/L respectively at that time). Retest both before resuming either.</li>
+      <li><strong>Livestock note</strong> — Yellow Tang lost during the first travel window (~Jul 18–26); working assessment was HLLE with possible contribution from the earlier Fluoride overdose. Worth a visual health check on remaining fish given this history.</li>
+      <li><strong>Lighting change</strong> — new custom LPS program (via Acclimation mode) started Aug 16. Day 11 handoff to full custom values lands ~Aug 26 — watch closely around that transition.</li>
     </ul>
   </div>
 </main>
 
-<footer>S2 600 · Dosing Hub · Generated August 9, 2026</footer>
+<footer>S2 600 · Dosing Hub · Generated August 21, 2026</footer>
 
 <script>
 const dailyItems = [
@@ -190,111 +204,48 @@ const stoppedItems = [
 
 // Second travel pause: Jul 31 - Aug 9 (not shown as individual cards — see banner above).
 // Trace dosing resumes today, Aug 9. Mysis feed every 2-3 days lights-out; photo every 3-4 days.
-// No corrections due this window — Jul 16 ICP correction plan completed Jul 28.
-const days = [
-  {date:"Sun, Aug 9",  feed:true,  photo:true,  corrections:[], note:"Trace dosing resumes today after the second travel pause, including Cobalt, Selenium, and Vanadium."},
-  {date:"Mon, Aug 10", feed:false, photo:false, corrections:[]},
-  {date:"Tue, Aug 11", feed:true,  photo:false, corrections:[], note:"Per Handbook guidance, watch Alk/Ca/Mg closely this week — resuming trace dosing can increase consumption, and all three are already at the top of range."},
-  {date:"Wed, Aug 12", feed:false, photo:true,  corrections:[]},
-  {date:"Thu, Aug 13", feed:true,  photo:false, corrections:[], note:"Suggested Alk/Ca/Mg retest day. Also a good checkpoint to retest Fluoride and Iodine before resuming either."},
-  {date:"Fri, Aug 14", feed:false, photo:false, corrections:[]},
-  {date:"Sat, Aug 15", feed:true,  photo:true,  corrections:[]},
-  {date:"Sun, Aug 16", feed:false, photo:false, corrections:[]},
-  {date:"Mon, Aug 17", feed:true,  photo:false, corrections:[]},
-  {date:"Tue, Aug 18", feed:false, photo:true,  corrections:[], note:"End of this schedule window — check in for next 10-day update."},
+// No corrections due this window — Jul 15 ICP correction plan completed Jul 28.
+const dailyList = document.getElementById('dailyList');
+dailyItems.forEach(it => {
+  dailyList.innerHTML += `
+    <label class="item">
+      <input type="checkbox">
+      <span class="item-name">${it.name}</span>
+      <span class="item-dose">${it.dose}</span>
+    </label>`;
+});
+
+const stoppedList = document.getElementById('stoppedList');
+stoppedItems.forEach(it => {
+  stoppedList.innerHTML += `
+    <div class="item stopped">
+      <input type="checkbox" disabled>
+      <span class="item-name">${it.name}</span>
+      <span class="item-dose">${it.dose}</span>
+    </div>`;
+});
+
+// Key checkpoints across the Aug 21 - Sept 15 window
+const checkpoints = [
+  {date:"Aug 21–22", title:"Alk retest + restart", detail:"Check Salifert Alk. If below 8.5, restart ESV Part 1 at ~14–15 ml/day (down from 18). Also retest Mg before dosing any standalone top-up — the 25-gal WC may have already shifted it."},
+  {date:"Aug 26", title:"Lighting Day 11 handoff", detail:"Acclimation mode switches to the full custom LPS program today. Watch the Hammers and Micromussa closely around this transition — it's a step change, not fully continuous."},
+  {date:"Aug 30", title:"Fortnightly WC due", detail:"~2 weeks after the Aug 16 change. Pause ESV Part 1 before/during, same as always."},
+  {date:"Sept 2–4", title:"Alk/Ca/Mg check-in", detail:"Routine confirmation the restarted rates are holding, especially given the tank's history of drift between checks."},
+  {date:"Sept 9–11", title:"Fluoride &amp; Iodine retest", detail:"Both have been stopped since the Jul 15 ICP without a recheck. Worth testing before the next ICP to know whether either can resume."},
+  {date:"Sept 12–13", title:"Pre-ICP check-in", detail:"Final Salifert round before sending the next ICP sample — baseline to compare lab results against."},
+  {date:"Sept 15", title:"Send next ICP", detail:"Per your own plan. Sample before daily dosing, before lights, mid-water column."},
 ];
 
-const container = document.getElementById('days');
-
-days.forEach((day, i) => {
-  const det = document.createElement('details');
-  det.className = 'day-card';
-  det.open = i === 0;
-
-  const hammerTasks = (day.feed ? 1 : 0) + (day.photo ? 1 : 0);
-  const totalItems = (day.paused ? 0 : dailyItems.length) + hammerTasks + (day.corrections ? day.corrections.length : 0);
-
-  det.innerHTML = `
-    <summary>
-      <div class="day-head">
-        <span class="day-date">${day.date}</span>
-        <div class="day-flags">
-          ${day.feed ? '<span class="flag feed">MYSIS FEED</span>' : ''}
-          ${day.photo ? '<span class="flag feed">PHOTO</span>' : ''}
-          ${day.icp ? '<span class="flag icp">ICP DUE</span>' : ''}
-          ${day.corrections && day.corrections.length ? '<span class="flag correction">CORRECTION</span>' : ''}
-          ${day.paused ? '<span class="flag" style="background:var(--stop-dim); color:var(--stop);">TRAVEL — TRACE PAUSED</span>' : ''}
-        </div>
+const cpContainer = document.getElementById('checkpoints');
+checkpoints.forEach(cp => {
+  cpContainer.innerHTML += `
+    <div class="banner" style="display:flex; gap:16px; align-items:flex-start;">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--accent); white-space:nowrap; padding-top:2px; min-width:80px;">${cp.date}</div>
+      <div>
+        <div style="font-weight:600; color:var(--text); margin-bottom:4px;">${cp.title}</div>
+        <div style="color:var(--muted); font-size:13.5px; line-height:1.6;">${cp.detail}</div>
       </div>
-      <div style="display:flex; align-items:center; gap:14px;">
-        <span class="progress">0/${totalItems}</span>
-        <span class="chevron">▶</span>
-      </div>
-    </summary>
-    <div class="day-body">
-      <div class="section-label">Daily trace elements</div>
-      ${day.paused ? `
-        ${dailyItems.map(it => `
-          <div class="item" style="opacity:0.5;">
-            <input type="checkbox" disabled>
-            <span class="item-name">${it.name} <span style="color:var(--stop); font-size:11px;">— PAUSED (travel)</span></span>
-            <span class="item-dose" style="text-decoration:line-through;">${it.dose}</span>
-          </div>`).join('')}
-      ` : dailyItems.map(it => `
-        <label class="item">
-          <input type="checkbox">
-          <span class="item-name">${it.name}</span>
-          <span class="item-dose">${it.dose}</span>
-        </label>`).join('')}
-
-      ${day.corrections && day.corrections.length ? `
-        <div class="section-label">Correction dosing (from Jul 16 ICP)</div>
-        ${day.corrections.map(it => `
-          <label class="item correction">
-            <input type="checkbox">
-            <span class="item-name">${it.name}</span>
-            <span class="item-dose">${it.dose}</span>
-          </label>`).join('')}
-      ` : ''}
-
-      <div class="section-label">Stopped — retest before resuming</div>
-      ${stoppedItems.map(it => `
-        <div class="item stopped">
-          <input type="checkbox" disabled>
-          <span class="item-name">${it.name}</span>
-          <span class="item-dose">${it.dose}</span>
-        </div>`).join('')}
-
-      ${hammerTasks ? `
-        <div class="section-label">Hammer care</div>
-        ${day.feed ? `
-          <label class="item">
-            <input type="checkbox">
-            <span class="item-name">Target-feed mysis at lights-out</span>
-            <span class="item-dose">Hammer</span>
-          </label>` : ''}
-        ${day.photo ? `
-          <label class="item">
-            <input type="checkbox">
-            <span class="item-name">Progress photo for trend tracking</span>
-            <span class="item-dose">Hammer</span>
-          </label>` : ''}
-      ` : ''}
-
-      ${day.note ? `<div class="note">${day.note}</div>` : ''}
-    </div>
-  `;
-
-  container.appendChild(det);
-
-  const boxes = det.querySelectorAll('input[type=checkbox]:not(:disabled)');
-  const progressEl = det.querySelector('.progress');
-  boxes.forEach(box => {
-    box.addEventListener('change', () => {
-      const checked = det.querySelectorAll('input[type=checkbox]:checked').length;
-      progressEl.textContent = `${checked}/${totalItems}`;
-    });
-  });
+    </div>`;
 });
 </script>
 

@@ -131,43 +131,49 @@
   <a class="hub-link" href="index.html"><span class="arrow">←</span> Back to hub</a>
   <div class="eyebrow">Tank 150 · SPS · Bridge Schedule</div>
   <h1>Dosing Schedule</h1>
-  <p class="subtitle">Updated August 9, 2026 — trace dosing resumes today after a second travel pause (Aug 1–9). Schedule below covers <strong>August 9 – 18</strong>.</p>
+  <p class="subtitle">Updated August 21, 2026 — extended schedule covering <strong>August 21 – September 15</strong>. Next ICP not planned until Sept 15, so this window is longer than the usual 10-day format.</p>
   <svg class="pulse" viewBox="0 0 600 36" preserveAspectRatio="none">
     <path class="pulse" d="M0,18 L60,18 L75,4 L90,32 L105,18 L180,18 L195,10 L210,26 L225,18 L300,18 L315,4 L330,32 L345,18 L420,18 L435,10 L450,26 L465,18 L540,18 L555,4 L570,32 L585,18 L600,18"/>
   </svg>
 </header>
 
 <main>
-  <div class="banner" style="border-color:rgba(240,171,252,0.35); color:#F0ABFC;">
-    <strong style="color:#F0ABFC;">Second travel pause now ended:</strong> daily trace elements were stopped <strong>July 31 – August 9</strong> (a second gap, separate from the Jul 18–26 pause). Alk and Ca pumps ran automated throughout. <strong>Trace dosing resumes today, Aug 9.</strong>
+  <div class="banner">
+    <strong>Status as of Aug 20:</strong> Alk — Trident 7.64 → true ≈8.16 dKH, Salifert 8.3 (both in range, pump holding at 160 ml/day). Ca — Salifert 440, right at target ceiling (pump holding at 95 ml/day). Mg — Trident 1293 → true ≈1310 (in range), but Salifert readings are currently unreliable: an old kit read 1230, a freshly opened kit read 1410 — neither trusted yet. <strong>Retest Mg (Trident + new Salifert kit) around Aug 22–23</strong> before drawing conclusions.
   </div>
   <div class="banner">
-    <strong>Automated pumps (monitor only):</strong> Alk 160 ml/day, Ca 95 ml/day (both set Jul 24, unchanged since). <strong>Jul 31 readings</strong>: Alk — Trident 7.56, true ≈8.08 dKH (back in the 7.8–8.5 target). Ca — Trident 464 (Trident-only, no Salifert same day — treat as unconfirmed). Mg — Trident 1303, true ≈1320 (in range). No pump changes recommended right now; get a fresh Salifert Ca reading when convenient since the last one is over a week old.
+    <strong>No correction dosing this window</strong> — the Jul correction plan completed Jul 31, and no new ICP is planned until Sept 15. Daily trace elements only.
   </div>
   <div class="banner" style="border-color:rgba(251,191,36,0.35);">
-    <strong style="color:var(--warn);">Watch this window:</strong> per the Reef Moonshiner's Handbook, resuming trace element dosing after a pause often <em>increases</em> coral metabolism and Ca/Alk consumption as corals respond to the renewed trace supply. Worth testing Alk and Ca a bit sooner than usual this week rather than assuming current rates will hold steady.
-  </div>
-  <div class="banner">
-    <strong>Correction dosing:</strong> none due this window — the Jul 16 ICP correction plan (Barium, Molybdenum, Rubidium, Potassium, Caesium, Strontium, Zinc, Fluoride) completed by Jul 31. The next correction plan will be computed once the next ICP results are in.
+    <strong style="color:var(--warn);">Reminder:</strong> Caesium is still deferred — not currently in stock, add with the next supply order. Not part of the daily checklist below until you have it on hand.
   </div>
 
-  <div id="days"></div>
+  <div class="section-label" style="margin-top:8px;">Daily routine (every day, Aug 21 – Sept 15)</div>
+  <div class="day-card" style="padding:4px 0;">
+    <div class="day-body" style="border-top:none; padding-top:16px;">
+      <div class="section-label">Daily trace elements</div>
+      <div id="dailyList"></div>
+      <div class="section-label">Reactor &amp; feeding</div>
+      <div id="recurringList"></div>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-top:28px;">Key checkpoints this window</div>
+  <div id="checkpoints"></div>
 
   <div class="watch">
     <h2>Ongoing watch items this window</h2>
     <ul>
-      <li><strong>NO3</strong> — last known reading below floor (Jul 8 cycle). Continue TDO pellets daily; worth a fresh Hanna check now that dosing has resumed after two travel gaps.</li>
-      <li><strong>PO4</strong> — ICP showed in-range (0.051) on Jul 16, but Hanna disagreed same week (0.13–0.14). Recheck Hanna to confirm current status.</li>
-      <li><strong>Ca</strong> — Trident 464 (Jul 31, unconfirmed — no same-day Salifert). Get a fresh Salifert reading; last confirmed Salifert was 460 on Jul 26.</li>
-      <li><strong>Alk</strong> — true ≈8.08 dKH (Jul 31), back in range after the Jul 24 rate increase to 160 ml/day. Watch this week per the Handbook note above — resumed trace dosing can raise consumption.</li>
-      <li><strong>Mg</strong> — true ≈1320 (Jul 31), in range. Next BRS stock dose only needed if it drifts back down toward ~1283 raw Trident.</li>
+      <li><strong>Mg test-kit conflict</strong> — top priority right now. Old Salifert kit (1230) vs. new kit (1410) vs. Trident+17 (~1310) don't agree. Don't dose Mg based on any single number until this resolves — see checkpoint below.</li>
+      <li><strong>NO3</strong> — last known reading below floor. Continue TDO pellets daily.</li>
+      <li><strong>PO4</strong> — ICP showed in-range (0.051) on Jul 15, but Hanna disagreed same week. Recheck periodically.</li>
       <li><strong>Chaeto</strong> — do not harvest until back to tennis-ball size.</li>
-      <li><strong>Correction dosing</strong> — none due this window. The Jul 16 ICP correction plan is fully complete; next plan will be computed from the next ICP results, whenever those are sent.</li>
+      <li><strong>ICP</strong> — next one planned for Sept 15 (per your own timeline, not urgent before then). Correction plan for the following cycle will be computed once results are back.</li>
     </ul>
   </div>
 </main>
 
-<footer>Tank 150 · Dosing Hub · Generated August 9, 2026</footer>
+<footer>Tank 150 · Dosing Hub · Generated August 21, 2026</footer>
 
 <script>
 const dailyItems = [
@@ -187,93 +193,45 @@ const recurring = [
   {name:"TDO pellets", dose:"daily"},
 ];
 
-// Second travel pause: Jul 31 - Aug 9 (not shown as individual cards — see banner above).
-// Trace dosing resumes today, Aug 9. No corrections due this window — next plan awaits next ICP.
-const days = [
-  {date:"Sun, Aug 9",  corrections:[], note:"Trace dosing resumes today after the second travel pause. Get a fresh Salifert Ca reading when convenient."},
-  {date:"Mon, Aug 10", corrections:[]},
-  {date:"Tue, Aug 11", corrections:[], note:"Per Handbook guidance, watch Alk/Ca closely this week — resuming trace dosing can increase consumption."},
-  {date:"Wed, Aug 12", corrections:[]},
-  {date:"Thu, Aug 13", corrections:[], note:"Suggested Alk/Ca/Mg retest day."},
-  {date:"Fri, Aug 14", corrections:[]},
-  {date:"Sat, Aug 15", corrections:[]},
-  {date:"Sun, Aug 16", corrections:[]},
-  {date:"Mon, Aug 17", corrections:[]},
-  {date:"Tue, Aug 18", corrections:[], note:"End of this schedule window — check in for next 10-day update."},
+const dailyList = document.getElementById('dailyList');
+dailyItems.forEach(it => {
+  dailyList.innerHTML += `
+    <label class="item">
+      <input type="checkbox">
+      <span class="item-name">${it.name}</span>
+      <span class="item-dose">${it.dose}</span>
+    </label>`;
+});
+
+const recurringList = document.getElementById('recurringList');
+recurring.forEach(it => {
+  recurringList.innerHTML += `
+    <label class="item">
+      <input type="checkbox">
+      <span class="item-name">${it.name}</span>
+      <span class="item-dose">${it.dose}</span>
+    </label>`;
+});
+
+// Key checkpoints across the Aug 21 - Sept 15 window
+const checkpoints = [
+  {date:"Aug 22–23", title:"Mg retest", detail:"Test Trident + the newly opened Salifert Mg kit. Old kit read 1230 (outlier, likely degraded), new kit read 1410 (100 mg/L above Trident+17's ~1310). Don't dose Mg until this resolves — if 1410 repeats, the Trident+17 offset itself may need recalibrating."},
+  {date:"Aug 28–30", title:"Alk/Ca check-in", detail:"Routine confirmation both pumps (160 ml/day Alk, 95 ml/day Ca) are still holding steady."},
+  {date:"Sept 5–7", title:"Alk/Ca/Mg check-in", detail:"Mid-window check given no ICP cross-reference until the 15th — worth catching any drift early rather than finding out at month's end."},
+  {date:"Sept 12–13", title:"Pre-ICP check-in", detail:"Final Salifert/Trident round before sending the next ICP sample — good baseline to compare the lab results against."},
+  {date:"Sept 15", title:"Send next ICP", detail:"Per your own plan. Take the sample before daily dosing, before lights, mid-water column, consistent with prior cycles. Correction plan will be computed once results are back."},
 ];
 
-const container = document.getElementById('days');
-
-days.forEach((day, i) => {
-  const det = document.createElement('details');
-  det.className = 'day-card';
-  det.open = i === 0;
-
-  const totalItems = (day.paused ? 0 : dailyItems.length) + recurring.length + day.corrections.length;
-
-  det.innerHTML = `
-    <summary>
-      <div class="day-head">
-        <span class="day-date">${day.date}</span>
-        <div class="day-flags">
-          ${day.corrections.length ? '<span class="flag correction">CORRECTION</span>' : ''}
-          ${day.icp ? '<span class="flag icp">ICP DUE</span>' : ''}
-          ${day.paused ? '<span class="flag correction" style="background:var(--correction-dim);color:var(--correction);">TRAVEL — TRACE PAUSED</span>' : ''}
-        </div>
+const cpContainer = document.getElementById('checkpoints');
+checkpoints.forEach(cp => {
+  cpContainer.innerHTML += `
+    <div class="banner" style="display:flex; gap:16px; align-items:flex-start;">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--accent); white-space:nowrap; padding-top:2px; min-width:80px;">${cp.date}</div>
+      <div>
+        <div style="font-weight:600; color:var(--text); margin-bottom:4px;">${cp.title}</div>
+        <div style="color:var(--muted); font-size:13.5px; line-height:1.6;">${cp.detail}</div>
       </div>
-      <div style="display:flex; align-items:center; gap:14px;">
-        <span class="progress">0/${totalItems}</span>
-        <span class="chevron">▶</span>
-      </div>
-    </summary>
-    <div class="day-body">
-      <div class="section-label">Daily trace elements</div>
-      ${day.paused ? `
-        ${dailyItems.map(it => `
-          <div class="item" style="opacity:0.5;">
-            <input type="checkbox" disabled>
-            <span class="item-name">${it.name} <span style="color:var(--correction); font-size:11px;">— PAUSED (travel)</span></span>
-            <span class="item-dose" style="text-decoration:line-through;">${it.dose}</span>
-          </div>`).join('')}
-      ` : dailyItems.map(it => `
-        <label class="item">
-          <input type="checkbox">
-          <span class="item-name">${it.name}</span>
-          <span class="item-dose">${it.dose}</span>
-        </label>`).join('')}
-
-      <div class="section-label">Reactor &amp; feeding</div>
-      ${recurring.map(it => `
-        <label class="item">
-          <input type="checkbox">
-          <span class="item-name">${it.name}</span>
-          <span class="item-dose">${it.dose}</span>
-        </label>`).join('')}
-
-      ${day.corrections.length ? `
-        <div class="section-label">Correction dosing (from Jul 16 ICP)</div>
-        ${day.corrections.map(it => `
-          <label class="item correction">
-            <input type="checkbox">
-            <span class="item-name">${it.name}</span>
-            <span class="item-dose">${it.dose}</span>
-          </label>`).join('')}
-      ` : ''}
-
-      ${day.note ? `<div class="note">${day.note}</div>` : ''}
-    </div>
-  `;
-
-  container.appendChild(det);
-
-  const boxes = det.querySelectorAll('input[type=checkbox]:not(:disabled)');
-  const progressEl = det.querySelector('.progress');
-  boxes.forEach(box => {
-    box.addEventListener('change', () => {
-      const checked = det.querySelectorAll('input[type=checkbox]:checked').length;
-      progressEl.textContent = `${checked}/${totalItems}`;
-    });
-  });
+    </div>`;
 });
 </script>
 
